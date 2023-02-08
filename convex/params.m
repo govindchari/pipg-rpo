@@ -55,4 +55,16 @@ function p = params()
     umax = 0.01;         % Max acceleration [m s^-2]
     p.umax = umax;
 
+    %%%%%%%%%%%%%%%%
+    %%% Dynamics %%%
+    %%%%%%%%%%%%%%%%
+    [p.A, p.B] = dynamics(n, dt);
+
+    %%%%%%%%%%%%
+    %%% Cost %%%
+    %%%%%%%%%%%%
+    p.Q = zeros(nx);
+    p.R = eye(nu);
+
+
 end

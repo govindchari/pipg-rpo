@@ -1,14 +1,14 @@
 function plotall(X, U, p)
     t = 0:p.dt:p.T-p.dt;
     
-    figure(1)
+    figure
     plot(X(2,:),X(1,:),'LineWidth',2)
     xlabel("Along Track [m]",'Interpreter','latex')
     ylabel("Radial [m]",'Interpreter','latex')
     title("Spacecraft Trajectory",'Interpreter','latex')
     grid on
     
-    figure(2)
+    figure
     plot(t, U, 'LineWidth',2)
     hold on
     yline(p.umax,'--r','linewidth',2)
