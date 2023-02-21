@@ -19,7 +19,7 @@ function p = double_integrator_params()
     p.dt = dt;
     T = 10;   % Time horizon [s]
     p.T = T;
-    N = T/dt;    % Number of discretization intervals
+    N = T/dt + 1;    % Number of discretization nodes
     p.N = N;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -28,9 +28,9 @@ function p = double_integrator_params()
 
     % x = [r v]'
     x0 = [10 0]';
-    xT = [0 0]';
+    xN = [0 0]';
     p.x0 = x0;
-    p.xT = xT;
+    p.xN = xN;
 
     %%%%%%%%%%%%%%%%%%%
     %%% Constraints %%%
@@ -41,8 +41,8 @@ function p = double_integrator_params()
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Scaling Matrices %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    Px = diag([10 1]);
-    Pu = diag([0.5]);
+    Px = diag([1 1]);
+    Pu = diag([1]);
     p.Px = Px;
     p.Pu = Pu;
 

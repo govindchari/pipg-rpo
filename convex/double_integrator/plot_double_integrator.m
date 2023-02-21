@@ -10,7 +10,7 @@ function plot_double_integrator(X, U, p)
     grid on
     
     figure
-    plot(tu, U, 'LineWidth',2)
+    plot(tu, U(1:p.N-1), 'LineWidth',2)
     hold on
     yline(p.umax,'--r','linewidth',2)
     yline(-p.umax,'--r','LineWidth',2)
