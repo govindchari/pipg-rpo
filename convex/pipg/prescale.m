@@ -1,7 +1,12 @@
 function [A,B,Q,R,umax] = prescale(p)
-    A = p.A;
-    B = p.B;
-    Q = p.Q;
-    R = p.R;
-    umax = p.umax;
+    % Scale H
+    A = p.Px \ p.A*p.Px;
+    B = p.Px \ p.B*p.Pu;
+
+    % Scale P
+    Q = p.Px'*p.Q*p.Px;
+    R = p.Pu'*p.R*p.Pu;
+
+    % Scale D
+    umax = p.umax / max(p.Pu(:));
 end

@@ -46,6 +46,15 @@ function p = params()
     end
     p.leading = leading;
 
+    %%%%%%%%%%%%%%%%%%%%%%%%
+    %%% Scaling Matrices %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%
+    Px = eye(nx);
+    Px = diag([1, 1000, 1, 1, 1, 1]);
+    Pu = 0.01*eye(nu); % Must be some multiple of the identity
+    p.Px = Px;
+    p.Pu = Pu;
+
     %%%%%%%%%%%%%%%%%%%
     %%% Constraints %%%
     %%%%%%%%%%%%%%%%%%%

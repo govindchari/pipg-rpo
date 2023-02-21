@@ -1,18 +1,17 @@
 function [X, U, solve_time, parse_time, solve_status] = double_integrator_test(p)
 
-    Ad = p.A;
-    Bd = p.B;
+    [Ad,Bd,~,R,umax] = prescale(p);
     u = sdpvar(repmat(p.nu,1,p.N), ones(1,p.N));
     x = sdpvar(repmat(p.nx,1,p.N+1), ones(1,p.N+1));
-    constraints = [x{1} == p.x0];
-    constraints = [constraints, x{p.N+1} == p.xT];
+    constraints = [x{1} == p.Px \ p.x0];
+    constraints = [constraints, x{p.N+1} == p.Px \ p.xT];
     objective = 0;
     for k = 1 : p.N
-        objective = objective + u{k}'*u{k};
+        objective = objective + u{k}'*R*u{k};
         constraints = [constraints, x{k+1} == Ad*x{k} + Bd*u{k}];
-        constraints = [constraints, norm(u{k},2) <= p.umax];
+        constraints = [constraints, norm(u{k},2) <= umax];
     end
-    options = sdpsettings('solver', 'gurobi', 'verbose', 0, 'debug', 0, 'ecos.abstol', 1e-6, 'ecos.reltol', 1e-6);
+    options = sdpsettings('solver', 'gurobi', 'verbose', 0, 'debug', 0);
     sol = optimize(constraints, objective, options);
 
     %%%%%%%%%%%%%%%%%%%%%%%%

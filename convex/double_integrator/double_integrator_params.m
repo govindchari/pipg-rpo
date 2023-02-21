@@ -38,6 +38,14 @@ function p = double_integrator_params()
     umax = 0.5;         % Max acceleration [m s^-2]
     p.umax = umax;
 
+    %%%%%%%%%%%%%%%%%%%%%%%%
+    %%% Scaling Matrices %%%
+    %%%%%%%%%%%%%%%%%%%%%%%%
+    Px = diag([10 1]);
+    Pu = diag([0.5]);
+    p.Px = Px;
+    p.Pu = Pu;
+
     %%%%%%%%%%%%%%%%
     %%% Dynamics %%%
     %%%%%%%%%%%%%%%%

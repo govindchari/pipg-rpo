@@ -1,5 +1,7 @@
 function p = problem(par)
 
+    load gurobi_sol.mat X U
+
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Objective Matrix %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
@@ -33,12 +35,16 @@ function p = problem(par)
 
     p.X = zeros(par.N + 1, par.nx);
     p.U = zeros(par.N, par.nu);
+    p.X = X;
+    p.U = U;
+    p.Xg = X;
+    p.Ug = U;
     p.V = zeros(par.N + 2, par.nx);
     p.W = zeros(par.N + 1, par.nx);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Boundary Conditions %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    p.X(1, :) = par.x0;
-    p.X(par.N+1, :) = par.xT;
+    p.X(1, :) = par.Px \ par.x0;
+    p.X(par.N+1, :) = par.Px \ par.xT;
 end
