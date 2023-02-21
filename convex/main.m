@@ -19,9 +19,9 @@ plotall(X, U, params)
 
 % Solve with PIPG
 
-prob = problem(params);
-[X, U, pc, dc, xcg, ucg] = pipg_solver(params, prob);
-plotall(X', U', params)
+prob = pipg_struct(params);
+[X_pipg, U_pipg, pc, dc, xcg, ucg] = pipg_solver(params, prob);
+plotall(X_pipg', U_pipg', params)
 
 figure
 semilogy(pc, "LineWidth",1)
@@ -34,11 +34,11 @@ semilogy(xcg, "LineWidth",1)
 hold on
 semilogy(ucg, "LineWidth",1)
 grid on
-title("Distance to Optimal")
+title('Convergence to Gurobi')
 
 %% Double Integrator Test
 % params = double_integrator_params();
-% prob = problem(params);
+% prob = pipg_struct(params);
 % 
 % [X, U, solve_time, parse_time, solve_status] = double_integrator_test(params);
 % fprintf("Solve Status: %s\n", solve_status)

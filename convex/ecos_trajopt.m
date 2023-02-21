@@ -1,13 +1,13 @@
 function [X, U, solve_time, parse_time, solve_status] = ecos_trajopt(p)
     [Ad,Bd,~,R,umax] = prescale(p);
-    u = sdpvar(repmat(p.nu,1,p.N), ones(1,p.N));
-    x = sdpvar(repmat(p.nx,1,p.N+1), ones(1,p.N+1));
+    u = sdpvar(repmat(p.nu,1,p.N-1), ones(1,p.N-1));
+    x = sdpvar(repmat(p.nx,1,p.N), ones(1,p.N));
     constraints = [x{1} == p.Px \ p.x0];
-    constraints = [constraints, x{p.N+1} == p.Px \ p.xT];
+    constraints = [constraints, x{p.N} == p.Px \ p.xN];
     objective = 0;
     S = [1 0 0 0 0 0;0 0 1 0 0 0];
     c = [0 tan(p.th_ac) 0 0 0 0];
-    for k = 1 : p.N
+    for k = 1 : p.N-1
         objective = objective + u{k}'*R*u{k};
         constraints = [constraints, x{k+1} == Ad*x{k} + Bd*u{k}];
         constraints = [constraints, norm(u{k},2) <= umax];

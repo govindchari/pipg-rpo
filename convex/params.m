@@ -18,7 +18,7 @@ function p = params()
     p.dt = dt;
     T = 1000;   % Time horizon [s]
     p.T = T;
-    N = T/dt;    % Number of discretization intervals
+    N = T/dt + 1;    % Number of discretization nodes
     p.N = N;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -36,9 +36,9 @@ function p = params()
 
     % x = [r v]'
     x0 = [0 1000 0 0 0 0]';
-    xT = [0 0 0 0 0 0]';
+    xN = [0 0 0 0 0 0]';
     p.x0 = x0;
-    p.xT = xT;
+    p.xN = xN;
     if x0(2) > 0
         leading = 1;
     else
@@ -49,7 +49,6 @@ function p = params()
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Scaling Matrices %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    Px = eye(nx);
     Px = diag([1, 1000, 1, 1, 1, 1]);
     Pu = 0.01*eye(nu); % Must be some multiple of the identity
     p.Px = Px;
@@ -74,6 +73,5 @@ function p = params()
     %%%%%%%%%%%%
     p.Q = zeros(nx);
     p.R = eye(nu);
-
 
 end

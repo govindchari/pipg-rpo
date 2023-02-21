@@ -9,7 +9,7 @@ function plotall(X, U, p)
     grid on
     
     figure
-    plot(t, U, 'LineWidth',2)
+    plot(t, U(:,1:p.N-1), 'LineWidth',2)
     hold on
     yline(p.umax,'--r','linewidth',2)
     yline(-p.umax,'--r','LineWidth',2)
