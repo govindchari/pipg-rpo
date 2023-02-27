@@ -1,4 +1,4 @@
-function p = pipg_struct(par)
+function p = pipg_devec_struct(par)
 
     load gurobi_sol.mat X U
 
@@ -17,12 +17,13 @@ function p = pipg_struct(par)
     %%% Constraint Matrix %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%
 
-    H = kron(eye(par.N), [-par.B eye(par.nx)]);
-    for k = 1:par.N-1
+    H = kron(eye(par.N-1), [-par.B eye(par.nx)]);
+    for k = 1:par.N-2
         H((k*par.nx)+(1:par.nx), (k*(par.nx+par.nu)-par.nx)+(1:par.nx)) = -par.A;
     end
-    p.H = H;
-    p.HtH = sparse(H' * H);
+    Hleft = [-par.A;zeros((par.N-2)*par.nx, par.nx)];
+    H = [Hleft, H];
+    p.H = sparse(H);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Stepsize Parameter %%%
@@ -45,8 +46,8 @@ function p = pipg_struct(par)
     p.Phi = zeros(par.N, par.nx);
     p.Phit = zeros(par.N, par.nx);
 
-    p.Xt = X';
-    p.Ut = [U'; 0 0 0];
+%     p.Xt = X';
+%     p.Ut = [U'; 0 0 0];
     p.Xg = X;
     p.Ug = U';
     %%%%%%%%%%%%%%%%%%%%%%%%%%%

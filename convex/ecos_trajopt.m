@@ -10,7 +10,7 @@ function [X, U, solve_time, parse_time, solve_status] = ecos_trajopt(p)
     for k = 1 : p.N-1
         objective = objective + u{k}'*R*u{k};
         constraints = [constraints, x{k+1} == Ad*x{k} + Bd*u{k}];
-        constraints = [constraints, norm(u{k},2) <= umax];
+%         constraints = [constraints, norm(u{k},2) <= umax];
 %         constraints = [constraints, norm(S*x{k}) <= p.leading * c*x{k}];
     end
     options = sdpsettings('solver', 'gurobi', 'verbose', 0, 'debug', 0);

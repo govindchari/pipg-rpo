@@ -14,10 +14,10 @@ function p = params()
     %%% Discretization Parameters %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     
-    dt = 2;    % Discretization time [s]
+    dt = 50;    % Discretization time [s]
     p.dt = dt;
     T = 1000;   % Time horizon [s]
-    p.T = T;
+    p.T = T; 
     N = T/dt + 1;    % Number of discretization nodes
     p.N = N;
 
@@ -49,8 +49,10 @@ function p = params()
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Scaling Matrices %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    Px = diag([1, 1000, 1, 1, 1, 1]);
-    Pu = 0.01*eye(nu); % Must be some multiple of the identity
+    Px = diag([140, 1000, 1, 1, 1, 1]);
+    Pu = 0.2*eye(nu); % Must be some multiple of the identity
+%     Px = eye(nx);
+%     Pu = eye(nu);
     p.Px = Px;
     p.Pu = Pu;
 
@@ -60,7 +62,7 @@ function p = params()
 
     th_ac = deg2rad(45); % Approach cone half-angle [rad]
     p.th_ac = th_ac;
-    umax = 0.01;         % Max acceleration [m s^-2]
+    umax = 1;         % Max acceleration [m s^-2]
     p.umax = umax;
 
     %%%%%%%%%%%%%%%%

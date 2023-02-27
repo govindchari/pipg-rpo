@@ -1,4 +1,4 @@
-function [X,U,primal_conv,dual_conv, X_conv_gurobi, U_conv_gurobi] = pipg_solver(par, p)
+function [X,U,primal_conv,dual_conv, X_conv_gurobi, U_conv_gurobi] = pipg_devec_solver(par, p)
     e = zeros(par.N, 1);
     fprintf("iter     objv     |Gx-g|\n")
     fprintf("-----------------------------\n")
@@ -17,10 +17,9 @@ function [X,U,primal_conv,dual_conv, X_conv_gurobi, U_conv_gurobi] = pipg_solver
     [alpha, beta] = compute_stepsizes(p);
     [A,B,Q,R,umax] = prescale(par);
 
-%     while ~(norm((Xold(:)-p.Xt(:)), Inf) <= eabs + erel * max(norm(p.Xt(:), Inf), norm(Xold(:), Inf)) ...
-%          && norm((Uold(:)-p.Ut(:)), Inf) <= eabs + erel * max(norm(p.Ut(:), Inf), norm(Uold(:), Inf))...
-%          && norm((Phiold(:)-p.Phi(:)), Inf) <= eabs + erel * max(norm(p.Phit(:), Inf), norm(Phiold(:), Inf)))
-    while (1==1)
+    while ~(norm((Xold(:)-p.Xt(:)), Inf) <= eabs + erel * max(norm(p.Xt(:), Inf), norm(Xold(:), Inf)) ...
+         && norm((Uold(:)-p.Ut(:)), Inf) <= eabs + erel * max(norm(p.Ut(:), Inf), norm(Uold(:), Inf))...
+         && norm((Phiold(:)-p.Phi(:)), Inf) <= eabs + erel * max(norm(p.Phit(:), Inf), norm(Phiold(:), Inf)))
 
         Uold = p.Ut;
         Xold = p.Xt;
@@ -28,7 +27,7 @@ function [X,U,primal_conv,dual_conv, X_conv_gurobi, U_conv_gurobi] = pipg_solver
 
         obj = 0;
 
-        if k>5000
+        if k>500
             break
         end
 
@@ -59,9 +58,9 @@ function [X,U,primal_conv,dual_conv, X_conv_gurobi, U_conv_gurobi] = pipg_solver
         if mod(k, 50) == 0
             fprintf("%d   %.3e  %.2e\n", k, obj, sqrt(sum(e)));
             primal_conv(end+1) = abs(max(norm((Xold(:)-p.X(:)), Inf), norm((Uold(:)-p.U(:)), Inf) ) - last_primal);
-            X_conv_gurobi(end+1) = norm(p.Xt(:)-p.Xg(:))/norm(p.Xg);
-            z = p.Ut(1:par.N-1,:);
-            U_conv_gurobi(end+1) = norm(z(:)-p.Ug(:))/norm(p.Ug);
+%             X_conv_gurobi(end+1) = norm(p.Xt(:)-p.Xg(:))/norm(p.Xg);
+%             z = p.Ut(1:par.N-1,:);
+%             U_conv_gurobi(end+1) = norm(z(:)-p.Ug(:))/norm(p.Ug);
 
             dual_conv(end+1) = abs(norm((Phiold(:)-p.Phi(:)), Inf) - last_dual);
             last_primal = max(norm((Xold(:)-p.X(:)), Inf), norm((Uold(:)-p.U(:)), Inf) );
