@@ -30,6 +30,7 @@ function p = pipg_vec_struct(par)
     % Zeros to account for no B_{N}^+ but state vector has u_{N}
     zros = zeros(par.nx * (par.N - 1), par.nu);
     H = [Hx,Hu,zros];
+
     p.H = sparse(H);
     
     %%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -40,7 +41,7 @@ function p = pipg_vec_struct(par)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Extrapolation Parameter %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    p.rho = 1.4;
+    p.rho = 1.9;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Optimizer Variables %%%

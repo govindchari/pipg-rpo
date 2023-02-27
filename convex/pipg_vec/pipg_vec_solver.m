@@ -1,6 +1,8 @@
 function [Z,primal_conv,dual_conv] = pipg_vec_solver(par, p)
     function zproj = project_D(z, par, p)
         zproj = z;
+
+        % Project onto boundary conditions
         zproj(1:par.nx) = par.Px \ par.x0;
         zproj(( (par.N - 1) * par.nx) + 1 : par.N * par.nx) = par.Px \ par.xN;
 %         for i = 1 : par.N
@@ -10,10 +12,10 @@ function [Z,primal_conv,dual_conv] = pipg_vec_solver(par, p)
     end
     fprintf("iter     objv     |Gx-g|\n")
     fprintf("-----------------------------\n")
-    xiold = zeros(par.N * (par.nx + par.nu), 1);
-    etaold = zeros((par.N - 1) * par.nx, 1);
-    eabs = 1e-4;
-    erel = 1e-4;
+    xiold = 1e6 * ones(par.N * (par.nx + par.nu), 1);
+    etaold = 1e6 * ones((par.N - 1) * par.nx, 1);
+    eabs = 1e-6;
+    erel = 1e-6;
     primal_conv = [];
     dual_conv = [];
     last_primal = 100;
@@ -21,16 +23,11 @@ function [Z,primal_conv,dual_conv] = pipg_vec_solver(par, p)
     k = 1;
     [alpha, beta] = compute_stepsizes(p);
 
-%     while ~(norm((xiold-p.xi), Inf) <= eabs + erel * max(norm(p.xi, Inf), norm(xiold, Inf)) ...
-%          && norm((etaold-p.eta), Inf) <= eabs + erel * max(norm(p.eta, Inf), norm(etaold, Inf)))
-    while (1==1)
+    while ~(norm((xiold-p.xi), Inf) <= eabs + erel * max(norm(p.xi, Inf), norm(xiold, Inf)) ...
+         && norm((etaold-p.eta), Inf) <= eabs + erel * max(norm(p.eta, Inf), norm(etaold, Inf)))
 
         xiold = p.xi;
         etaold = p.eta;
-
-        if k>100000
-            break
-        end
 
         % Primal Update
         p.z = project_D(p.xi - alpha * (p.P * p.xi + p.H' * p.eta), par, p);
@@ -50,9 +47,6 @@ function [Z,primal_conv,dual_conv] = pipg_vec_solver(par, p)
             last_dual = norm((etaold-p.eta), Inf);
         end
         k = k + 1;
-%         norm((Xold(:)-p.Xt(:)), Inf) / (eabs + erel * max(norm(p.Xt(:), Inf), norm(Xold(:), Inf)))
-%         norm((Uold(:)-p.Ut(:)), Inf) / (eabs + erel * max(norm(p.Ut(:), Inf), norm(Uold(:), Inf)))
-%         norm((Phiold(:)-p.Phit(:)), Inf) / (eabs + erel * max(norm(p.Phit(:), Inf), norm(Phiold(:), Inf)))
     end
     Z = p.xi;
 end
