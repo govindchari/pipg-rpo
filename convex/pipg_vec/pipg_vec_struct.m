@@ -31,7 +31,7 @@ function p = pipg_vec_struct(par)
     zros = zeros(par.nx * (par.N - 1), par.nu);
     H = [Hx,Hu,zros];
     for i = 1:size(H,1)
-        H(i,:) = H(i,:)/norm(H(i,:));
+        H(i,:) = H(i,:)/norm(H(i,:), Inf);
     end
 
     p.H = sparse(H);
