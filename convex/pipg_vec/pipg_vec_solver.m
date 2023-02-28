@@ -25,7 +25,6 @@ function [Z,primal_conv,dual_conv] = pipg_vec_solver(par, p)
 
     while ~(norm((xiold-p.xi), Inf) <= eabs + erel * max(norm(p.xi, Inf), norm(xiold, Inf)) ...
          && norm((etaold-p.eta), Inf) <= eabs + erel * max(norm(p.eta, Inf), norm(etaold, Inf)))
-
         xiold = p.xi;
         etaold = p.eta;
 

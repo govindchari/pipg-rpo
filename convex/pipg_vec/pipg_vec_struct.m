@@ -9,7 +9,7 @@ function p = pipg_vec_struct(par)
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Objective Matrix %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    R = eye(3);
+    R = (1/(5.1335))*eye(3);
     P = sparse(Q);
     for i = 2:par.N
         P = blkdiag(P, sparse(Q));
@@ -30,6 +30,9 @@ function p = pipg_vec_struct(par)
     % Zeros to account for no B_{N}^+ but state vector has u_{N}
     zros = zeros(par.nx * (par.N - 1), par.nu);
     H = [Hx,Hu,zros];
+    for i = 1:size(H,1)
+        H(i,:) = H(i,:)/norm(H(i,:));
+    end
 
     p.H = sparse(H);
     
@@ -41,7 +44,7 @@ function p = pipg_vec_struct(par)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Extrapolation Parameter %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    p.rho = 1.9;
+    p.rho = 1.3;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Optimizer Variables %%%

@@ -49,8 +49,8 @@ function p = params()
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Scaling Matrices %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    Px = diag([140, 1000, 1, 1, 1, 1]);
-    Pu = 0.2*eye(nu); % Must be some multiple of the identity
+    Px = diag([140, 1000, 1, 1, 1.6, 1]);
+    Pu = 0.3*eye(nu); % Must be some multiple of the identity
 %     Px = eye(nx);
 %     Pu = eye(nu);
     p.Px = Px;
