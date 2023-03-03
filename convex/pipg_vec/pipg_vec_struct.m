@@ -9,7 +9,8 @@ function p = pipg_vec_struct(par)
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Objective Matrix %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    R = (1/(5.1335))*eye(3);
+    sig = 5.1335;
+    R = (1/sig)*eye(3);
     P = sparse(Q);
     for i = 2:par.N
         P = blkdiag(P, sparse(Q));
@@ -33,18 +34,10 @@ function p = pipg_vec_struct(par)
     for i = 1:size(H,1)
         H(i,:) = H(i,:)/norm(H(i,:), Inf);
     end
+    H = sparse(H);
 
-    p.H = sparse(H);
-    
-    %%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% Stepsize Parameter %%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%
-    p.omega = 1.0;
-
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% Extrapolation Parameter %%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    p.rho = 1.3;
+    p.H = H;
+    p.Ht = H';
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Optimizer Variables %%%
@@ -55,9 +48,4 @@ function p = pipg_vec_struct(par)
     p.xi = zeros(par.N * (par.nx + par.nu), 1);
     p.eta = zeros((par.N - 1) * par.nx, 1);
 
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%% Boundary Conditions %%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%
-    p.X(1, :) = par.Px \ par.x0;
-    p.X(par.N, :) = par.Px \ par.xN;
 end

@@ -39,8 +39,9 @@ plotall(X, U, params)
 
 % Solve with Vectorized PIPG
 prob = pipg_vec_struct(params);
+opts = pipg_vec_opts();
 tic
-[Z_pipg, pc, dc] = pipg_vec_solver(params, prob);
+[Z_pipg, pc, dc] = pipg_vec_solver(params, prob, opts);
 toc
 [X_pipg, U_pipg] = devec_sol(Z_pipg, params);
 plotall(X_pipg, U_pipg, params)
