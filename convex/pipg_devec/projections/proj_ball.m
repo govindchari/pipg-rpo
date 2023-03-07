@@ -1,7 +1,5 @@
-function xproj = proj_ball(x, r)
+function x = proj_ball(x, r)
     if norm(x) > r
-        xproj = (r / norm(x)) * x;
-    else
-        xproj = x;
+        x = (r / norm(x)) * x;
     end
 end

@@ -18,12 +18,11 @@ function p = pipg_vec_struct(par)
     for i = 1:par.N
         P = blkdiag(P, sparse(R));
     end
-    p.P = P;
+    p.P = sparse(P);
 
     %%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Constraint Matrix %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%
-
     Hx = [kron(speye(par.N - 1),A) zeros(par.nx*(par.N - 1),par.nx)] ...
         - [zeros(par.nx*(par.N - 1),par.nx) speye(par.nx*(par.N - 1))];
     Hu = kron(eye(par.N - 1), B);

@@ -49,20 +49,24 @@ function p = params()
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Scaling Matrices %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    Px = diag([140, 1000, 1, 1, 1.6, 1]);
-    Pu = 0.3*eye(nu); % Must be some multiple of the identity
+%     Px = diag([140, 1000, 1, 1.6, 1.6, 1.6]);
+    Px = diag([140, 140, 140, 1.6, 1.6, 1.6]);
+    Pu = 0.25*eye(nu); % Must be some multiple of the identity
 %     Px = eye(nx);
 %     Pu = eye(nu);
     p.Px = Px;
     p.Pu = Pu;
 
+    p.x0s = Px \ x0;
+    p.xNs = Px \ xN;
+    
     %%%%%%%%%%%%%%%%%%%
     %%% Constraints %%%
     %%%%%%%%%%%%%%%%%%%
 
     th_ac = deg2rad(45); % Approach cone half-angle [rad]
     p.th_ac = th_ac;
-    umax = 1;         % Max acceleration [m s^-2]
+    umax = 0.25;         % Max acceleration [m s^-2]
     p.umax = umax;
 
     %%%%%%%%%%%%%%%%
