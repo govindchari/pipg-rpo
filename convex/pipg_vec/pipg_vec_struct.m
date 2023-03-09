@@ -3,13 +3,14 @@ function p = pipg_vec_struct(par)
     %%%%%%%%%%%%%%%%
     %%% Prescale %%%
     %%%%%%%%%%%%%%%%
-    [A,B,Q,R,umax] = prescale(par);
+    [A,B,Q,R,umax,vmax] = prescale(par);
     p.umax = umax;
+    p.vmax = vmax;
 
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Objective Matrix %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-    sig = 5.1335;
+    sig = 5.4360;
     R = (1/sig)*eye(3);
     P = sparse(Q);
     for i = 2:par.N

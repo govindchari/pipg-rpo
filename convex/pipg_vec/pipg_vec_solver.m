@@ -3,10 +3,15 @@ function [Z,primal_conv,dual_conv,solve_time] = pipg_vec_solver(par, p, opts)
         z(1:par.nx) = par.x0s;
         z(( (par.N - 1) * par.nx) + 1 : par.N * par.nx) = par.xNs;
 
-        % Input Norm Constraint
+
+        % State and Control Constraints
         for i = 1 : par.N
-            idx = par.N * par.nx + (i-1) * par.nu + 1 : par.N * par.nx + i * par.nu;
-            z(idx) = proj_ball(z(idx), p.umax);
+            idx_u = par.N * par.nx + (i-1) * par.nu + 1 : par.N * par.nx + i * par.nu;
+            idx_v = (i - 1) * par.nx + 4 : i * par.nx;
+
+            z(idx_u) = proj_ball(z(idx_u), p.umax);
+            z(idx_v) = proj_ball(z(idx_v), p.vmax);
+
         end
     end
     tic
@@ -35,7 +40,7 @@ function [Z,primal_conv,dual_conv,solve_time] = pipg_vec_solver(par, p, opts)
         p.eta = (1 - opts.rho) * p.eta + opts.rho * p.w;
 
         if mod(k, opts.check_iter) == 0
-%             fprintf("%d   %.3e  %.2e\n", k, 0.5 * p.xi' * p.P * p.xi, norm(p.H * p.xi));
+            fprintf("%d   %.3e  %.2e\n", k, 0.5 * p.xi' * p.P * p.xi, norm(p.H * p.xi));
 %             primal_conv(end+1) = abs(norm((xiold-p.xi), Inf) - last_primal);
 %             dual_conv(end+1) = abs(norm((etaold-p.eta), Inf) - last_dual);
 %             last_primal = norm((xiold-p.xi), Inf);

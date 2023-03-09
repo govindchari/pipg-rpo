@@ -12,12 +12,12 @@ params = params();
 % % Solve with YALMIP/Gurobi
 [X, U, solve_time, parse_time, solve_status] = ecos_trajopt(params);
 
-fprintf("Solve Status: %s\n", solve_status)
-fprintf("Parse Time: %4.1f ms\n", parse_time)
-fprintf("Solve Time: %4.1f ms\n", solve_time)
+fprintf("ECOS Solve Status: %s\n", solve_status)
+fprintf("YALMIP Parse Time: %4.1f ms\n", parse_time)
+fprintf("ECOS Solve Time: %4.1f ms\n", solve_time)
 
 [X, U] = unscale(X, U, params);
-plotall(X, U, params)
+% plotall(X, U, params)
 
 % Solve with Vectorized PIPG
 prob = pipg_vec_struct(params);
@@ -33,7 +33,7 @@ acc = 100 * max(norm(X_pipg(:)-X(:))/norm(X(:)), norm(upipg(1:end-params.nu)-U(:
 fprintf("PIPG Solve Time: %4.1f ms\n", pipg_time)
 fprintf("Within %4.4f percent of ECOS\n", acc)
 
-plotall(X_pipg, U_pipg, params)
+% plotall(X_pipg, U_pipg, params)
 
 % figure
 % semilogy(pc, 'o', "LineWidth",1)
@@ -41,13 +41,13 @@ plotall(X_pipg, U_pipg, params)
 % semilogy(dc, 'o', "LineWidth",1)
 % grid on
 % 
-figure(7)
-plot(X(2,:),X(1,:),"LineWidth",2)
-hold on
-plot(X_pipg(2,:),X_pipg(1,:),"LineWidth",2)
-title("ECOS vs PIPG")
-legend("ECOS","PIPG")
-grid on
+% figure
+% plot(X(2,:),X(1,:),"LineWidth",2)
+% hold on
+% plot(X_pipg(2,:),X_pipg(1,:),"LineWidth",2)
+% title("ECOS vs PIPG")
+% legend("ECOS","PIPG")
+% grid on
 
 %% Double Integrator Test
 % params = double_integrator_params();

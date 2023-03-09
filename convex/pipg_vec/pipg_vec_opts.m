@@ -8,15 +8,15 @@ function opts = pipg_vec_opts()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Extrapolation Parameter %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    opts.rho = 1.3;
+    opts.rho = 1.8;
     
     %%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Stopping Criteria %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%
 
     opts.check_iter = 50;
-    opts.eps_rel = 5e-4;
-    opts.eps_abs = 5e-4;
+    opts.eps_rel = 1e-4;
+    opts.eps_abs = 1e-4;
     opts.max_iter = 10000;
 
     %%%%%%%%%%%%%%%%%%%%%%%
