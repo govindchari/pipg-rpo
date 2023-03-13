@@ -16,32 +16,9 @@
 #include "rt_nonfinite.h"
 #include "mwmathutil.h"
 
-/* Variable Definitions */
-static emlrtRSInfo hc_emlrtRSI = {
-    319,                                                          /* lineNo */
-    "eml_float_colon",                                            /* fcnName */
-    "/usr/local/MATLAB/R2022b/toolbox/eml/lib/matlab/ops/colon.m" /* pathName */
-};
-
-static emlrtRTEInfo e_emlrtRTEI = {
-    419,                                                          /* lineNo */
-    15,                                                           /* colNo */
-    "assert_pmaxsize",                                            /* fName */
-    "/usr/local/MATLAB/R2022b/toolbox/eml/lib/matlab/ops/colon.m" /* pName */
-};
-
-static emlrtRTEInfo db_emlrtRTEI = {
-    320,                                                          /* lineNo */
-    20,                                                           /* colNo */
-    "colon",                                                      /* fName */
-    "/usr/local/MATLAB/R2022b/toolbox/eml/lib/matlab/ops/colon.m" /* pName */
-};
-
 /* Function Definitions */
-void eml_float_colon(const emlrtStack *sp, real_T a, real_T b,
-                     emxArray_real_T *y)
+void eml_float_colon(real_T a, real_T b, emxArray_real_T *y)
 {
-  emlrtStack st;
   real_T apnd;
   real_T cdiff;
   real_T ndbl;
@@ -49,8 +26,6 @@ void eml_float_colon(const emlrtStack *sp, real_T a, real_T b,
   int32_T k;
   int32_T n;
   int32_T nm1d2;
-  st.prev = sp;
-  st.tls = sp->tls;
   ndbl = muDoubleScalarFloor((b - a) + 0.5);
   apnd = a + ndbl;
   cdiff = apnd - b;
@@ -69,15 +44,10 @@ void eml_float_colon(const emlrtStack *sp, real_T a, real_T b,
   } else {
     n = 0;
   }
-  st.site = &hc_emlrtRSI;
-  if (ndbl > 2.147483647E+9) {
-    emlrtErrorWithMessageIdR2018a(&st, &e_emlrtRTEI, "Coder:MATLAB:pmaxsize",
-                                  "Coder:MATLAB:pmaxsize", 0);
-  }
   nm1d2 = y->size[0] * y->size[1];
   y->size[0] = 1;
   y->size[1] = n;
-  emxEnsureCapacity_real_T(sp, y, nm1d2, &db_emlrtRTEI);
+  emxEnsureCapacity_real_T(y, nm1d2);
   y_data = y->data;
   if (n > 0) {
     y_data[0] = a;

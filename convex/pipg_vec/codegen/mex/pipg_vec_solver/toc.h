@@ -21,6 +21,6 @@
 #include <string.h>
 
 /* Function Declarations */
-real_T toc(const emlrtStack *sp);
+real_T toc(void);
 
 /* End of code generation (toc.h) */

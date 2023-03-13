@@ -3,15 +3,16 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * eml_int_forloop_overflow_check.h
+ * dot.h
  *
- * Code generation for function 'eml_int_forloop_overflow_check'
+ * Code generation for function 'dot'
  *
  */
 
 #pragma once
 
 /* Include files */
+#include "pipg_vec_solver_types.h"
 #include "rtwtypes.h"
 #include "emlrt.h"
 #include "mex.h"
@@ -21,6 +22,6 @@
 #include <string.h>
 
 /* Function Declarations */
-void check_forloop_overflow_error(const emlrtStack *sp);
+real_T dot(const emxArray_real_T *a);
 
-/* End of code generation (eml_int_forloop_overflow_check.h) */
+/* End of code generation (dot.h) */

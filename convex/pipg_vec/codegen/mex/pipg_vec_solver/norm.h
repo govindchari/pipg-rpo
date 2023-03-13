@@ -12,6 +12,7 @@
 #pragma once
 
 /* Include files */
+#include "pipg_vec_solver_types.h"
 #include "rtwtypes.h"
 #include "emlrt.h"
 #include "mex.h"
@@ -22,5 +23,9 @@
 
 /* Function Declarations */
 real_T b_norm(const real_T x[189]);
+
+real_T c_norm(const real_T x[3]);
+
+real_T d_norm(const emxArray_real_T *x);
 
 /* End of code generation (norm.h) */

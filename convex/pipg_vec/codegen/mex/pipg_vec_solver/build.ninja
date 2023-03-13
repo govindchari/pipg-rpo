@@ -45,21 +45,21 @@ build $builddir/tic.o : cc $root/tic.c
 build $builddir/timeKeeper.o : cc $root/timeKeeper.c
 build $builddir/diag.o : cc $root/diag.c
 build $builddir/sparse.o : cc $root/sparse.c
-build $builddir/sparse1.o : cc $root/sparse1.c
 build $builddir/norm.o : cc $root/norm.c
 build $builddir/mtimes.o : cc $root/mtimes.c
 build $builddir/colon.o : cc $root/colon.c
+build $builddir/dot.o : cc $root/dot.c
 build $builddir/mod.o : cc $root/mod.c
 build $builddir/toc.o : cc $root/toc.c
 build $builddir/_coder_pipg_vec_solver_api.o : cc $root/interface/_coder_pipg_vec_solver_api.c
 build $builddir/_coder_pipg_vec_solver_mex.o : cc $root/interface/_coder_pipg_vec_solver_mex.c
-build $builddir/eml_int_forloop_overflow_check.o : cc $root/eml_int_forloop_overflow_check.c
 build $builddir/introsort.o : cc $root/introsort.c
 build $builddir/insertionsort.o : cc $root/insertionsort.c
 build $builddir/heapsort.o : cc $root/heapsort.c
+build $builddir/proj_cone.o : cc $root/proj_cone.c
 build $builddir/pipg_vec_solver_emxutil.o : cc $root/pipg_vec_solver_emxutil.c
 build $builddir/_coder_pipg_vec_solver_info.o : cc $root/interface/_coder_pipg_vec_solver_info.c
 build $builddir/c_mexapi_version.o : cc $matlabdir/extern/version/c_mexapi_version.c
 
 # Link
-build $root/pipg_vec_solver_mex.mexa64 : link $builddir/pipg_vec_solver_data.o $builddir/rt_nonfinite.o $builddir/pipg_vec_solver_initialize.o $builddir/pipg_vec_solver_terminate.o $builddir/pipg_vec_solver.o $builddir/tic.o $builddir/timeKeeper.o $builddir/diag.o $builddir/sparse.o $builddir/sparse1.o $builddir/norm.o $builddir/mtimes.o $builddir/colon.o $builddir/mod.o $builddir/toc.o $builddir/_coder_pipg_vec_solver_api.o $builddir/_coder_pipg_vec_solver_mex.o $builddir/eml_int_forloop_overflow_check.o $builddir/introsort.o $builddir/insertionsort.o $builddir/heapsort.o $builddir/pipg_vec_solver_emxutil.o $builddir/_coder_pipg_vec_solver_info.o $builddir/c_mexapi_version.o 
+build $root/pipg_vec_solver_mex.mexa64 : link $builddir/pipg_vec_solver_data.o $builddir/rt_nonfinite.o $builddir/pipg_vec_solver_initialize.o $builddir/pipg_vec_solver_terminate.o $builddir/pipg_vec_solver.o $builddir/tic.o $builddir/timeKeeper.o $builddir/diag.o $builddir/sparse.o $builddir/norm.o $builddir/mtimes.o $builddir/colon.o $builddir/dot.o $builddir/mod.o $builddir/toc.o $builddir/_coder_pipg_vec_solver_api.o $builddir/_coder_pipg_vec_solver_mex.o $builddir/introsort.o $builddir/insertionsort.o $builddir/heapsort.o $builddir/proj_cone.o $builddir/pipg_vec_solver_emxutil.o $builddir/_coder_pipg_vec_solver_info.o $builddir/c_mexapi_version.o 

@@ -21,11 +21,10 @@
 #include <string.h>
 
 /* Function Declarations */
-void b_timeKeeper(const emlrtStack *sp, real_T *outTime_tv_sec,
-                  real_T *outTime_tv_nsec);
+void b_timeKeeper(real_T *outTime_tv_sec, real_T *outTime_tv_nsec);
 
 void savedTime_not_empty_init(void);
 
-void timeKeeper(const emlrtStack *sp, const emlrtTimespec newTime);
+void timeKeeper(const emlrtTimespec newTime);
 
 /* End of code generation (timeKeeper.h) */

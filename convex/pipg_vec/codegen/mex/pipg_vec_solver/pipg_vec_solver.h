@@ -22,7 +22,7 @@
 #include <string.h>
 
 /* Function Declarations */
-void pipg_vec_solver(const emlrtStack *sp, const struct0_T *par, struct1_T *p,
-                     const struct2_T *opts, real_T Z[189], real_T *solve_time);
+void pipg_vec_solver(const struct0_T *par, struct1_T *p, const struct2_T *opts,
+                     real_T Z[189], real_T W[120], real_T *solve_time);
 
 /* End of code generation (pipg_vec_solver.h) */

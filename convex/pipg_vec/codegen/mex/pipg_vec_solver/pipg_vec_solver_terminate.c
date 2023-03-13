@@ -18,14 +18,8 @@
 /* Function Definitions */
 void pipg_vec_solver_atexit(void)
 {
-  emlrtStack st = {
-      NULL, /* site */
-      NULL, /* tls */
-      NULL  /* prev */
-  };
   mexFunctionCreateRootTLS();
-  st.tls = emlrtRootTLSGlobal;
-  emlrtEnterRtStackR2012b(&st);
+  emlrtEnterRtStackR2012b(emlrtRootTLSGlobal);
   emlrtDestroyRootTLS(&emlrtRootTLSGlobal);
   emlrtExitTimeCleanup(&emlrtContextGlobal);
 }

@@ -21,6 +21,6 @@
 #include <string.h>
 
 /* Function Declarations */
-void tic(const emlrtStack *sp);
+void tic(void);
 
 /* End of code generation (tic.h) */

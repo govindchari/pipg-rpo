@@ -16,61 +16,12 @@
 #include "rt_nonfinite.h"
 #include "mwmathutil.h"
 
-/* Variable Definitions */
-static emlrtRSInfo n_emlrtRSI = {
-    53,            /* lineNo */
-    "sparse/diag", /* fcnName */
-    "/usr/local/MATLAB/R2022b/toolbox/shared/coder/coder/+coder/+internal/"
-    "@sparse/diag.m" /* pathName */
-};
-
-static emlrtRSInfo o_emlrtRSI = {
-    136,          /* lineNo */
-    "matrixDiag", /* fcnName */
-    "/usr/local/MATLAB/R2022b/toolbox/shared/coder/coder/+coder/+internal/"
-    "@sparse/diag.m" /* pathName */
-};
-
-static emlrtRSInfo p_emlrtRSI = {
-    1482,                 /* lineNo */
-    "sparse/spallocLike", /* fcnName */
-    "/usr/local/MATLAB/R2022b/toolbox/shared/coder/coder/+coder/+internal/"
-    "@sparse/sparse.m" /* pathName */
-};
-
-static emlrtRSInfo q_emlrtRSI = {
-    176,             /* lineNo */
-    "sparse/sparse", /* fcnName */
-    "/usr/local/MATLAB/R2022b/toolbox/shared/coder/coder/+coder/+internal/"
-    "@sparse/sparse.m" /* pathName */
-};
-
-static emlrtRTEInfo c_emlrtRTEI = {
-    1629,              /* lineNo */
-    9,                 /* colNo */
-    "assertValidSize", /* fName */
-    "/usr/local/MATLAB/R2022b/toolbox/shared/coder/coder/+coder/+internal/"
-    "@sparse/sparse.m" /* pName */
-};
-
-static emlrtRTEInfo x_emlrtRTEI = {
-    53,     /* lineNo */
-    5,      /* colNo */
-    "diag", /* fName */
-    "/usr/local/MATLAB/R2022b/toolbox/shared/coder/coder/+coder/+internal/"
-    "@sparse/diag.m" /* pName */
-};
-
 /* Function Definitions */
-void sparse_diag(const emlrtStack *sp, const emxArray_real_T *this_d,
+void sparse_diag(const emxArray_real_T *this_d,
                  const emxArray_int32_T *this_colidx,
                  const emxArray_int32_T *this_rowidx, emxArray_real_T *y_d,
                  emxArray_int32_T *y_colidx, emxArray_int32_T *y_rowidx)
 {
-  emlrtStack b_st;
-  emlrtStack c_st;
-  emlrtStack d_st;
-  emlrtStack st;
   const real_T *this_d_data;
   real_T *y_d_data;
   const int32_T *this_colidx_data;
@@ -80,39 +31,22 @@ void sparse_diag(const emlrtStack *sp, const emxArray_real_T *this_d,
   int32_T numalloc;
   int32_T toFill;
   int32_T *y_rowidx_data;
-  st.prev = sp;
-  st.tls = sp->tls;
-  b_st.prev = &st;
-  b_st.tls = st.tls;
-  c_st.prev = &b_st;
-  c_st.tls = b_st.tls;
-  d_st.prev = &c_st;
-  d_st.tls = c_st.tls;
   this_rowidx_data = this_rowidx->data;
   this_colidx_data = this_colidx->data;
   this_d_data = this_d->data;
-  st.site = &n_emlrtRSI;
   numalloc = this_colidx_data[this_colidx->size[0] - 1] - 1;
   numalloc = muIntScalarMin_sint32(189, numalloc);
-  b_st.site = &o_emlrtRSI;
-  c_st.site = &p_emlrtRSI;
-  d_st.site = &q_emlrtRSI;
-  if (numalloc < 0) {
-    emlrtErrorWithMessageIdR2018a(&d_st, &c_emlrtRTEI,
-                                  "Coder:toolbox:SparseNegativeSize",
-                                  "Coder:toolbox:SparseNegativeSize", 0);
-  }
   numalloc = muIntScalarMax_sint32(numalloc, 1);
   low_ip1 = y_d->size[0];
   y_d->size[0] = numalloc;
-  emxEnsureCapacity_real_T(&c_st, y_d, low_ip1, &x_emlrtRTEI);
+  emxEnsureCapacity_real_T(y_d, low_ip1);
   y_d_data = y_d->data;
   for (low_ip1 = 0; low_ip1 < numalloc; low_ip1++) {
     y_d_data[low_ip1] = 0.0;
   }
   low_ip1 = y_rowidx->size[0];
   y_rowidx->size[0] = numalloc;
-  emxEnsureCapacity_int32_T(&c_st, y_rowidx, low_ip1, &x_emlrtRTEI);
+  emxEnsureCapacity_int32_T(y_rowidx, low_ip1);
   y_rowidx_data = y_rowidx->data;
   for (low_ip1 = 0; low_ip1 < numalloc; low_ip1++) {
     y_rowidx_data[low_ip1] = 0;
@@ -160,7 +94,7 @@ void sparse_diag(const emlrtStack *sp, const emxArray_real_T *this_d,
   }
   low_ip1 = y_colidx->size[0];
   y_colidx->size[0] = 2;
-  emxEnsureCapacity_int32_T(&st, y_colidx, low_ip1, &x_emlrtRTEI);
+  emxEnsureCapacity_int32_T(y_colidx, low_ip1);
   y_rowidx_data = y_colidx->data;
   y_rowidx_data[0] = 1;
   y_rowidx_data[1] = toFill + 1;

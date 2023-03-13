@@ -35,7 +35,7 @@ function p = params()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % x = [r v]'
-    x0 = [0 1000 0 0 0 0]';
+    x0 = [100 1000 100 0 0 0]';
     xN = [0 0 0 0 0 0]';
     p.x0 = x0;
     p.xN = xN;
@@ -50,7 +50,7 @@ function p = params()
     %%% Constraints %%%
     %%%%%%%%%%%%%%%%%%%
 
-    p.th_ac = deg2rad(45); % Approach cone half-angle [rad]    
+    p.th_ac = deg2rad(15); % Approach cone half-angle [rad]    
     p.umax = 0.25; % Max delta-v [m s^-1]
     p.vmax = 1.5; % Max speed [m s^-1]
 
@@ -73,6 +73,12 @@ function p = params()
     Pu = p.umax*eye(nu); % Must be some multiple of the identity
 %     Px = eye(nx);
 %     Pu = eye(nu);
+
+    % Need these constraints on scaling to impose ball constraints
+    assert(Px(1,1) == Px(2,2) && Px(2,2) == Px(3,3))
+    assert(Px(4,4) == Px(5,5) && Px(5,5) == Px(6,6))
+    assert(Pu(1,1) == Pu(2,2) && Pu(2,2) == Pu(3,3))
+
     p.Px = Px;
     p.Pu = Pu;
 

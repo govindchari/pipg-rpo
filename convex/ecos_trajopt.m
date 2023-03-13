@@ -13,7 +13,7 @@ function [X, U, solve_time, parse_time, solve_status] = ecos_trajopt(p)
         constraints = [constraints, x{k+1} == Ad*x{k} + Bd*u{k}];
         constraints = [constraints, norm(x{k}(4:6)) <= vmax];
         constraints = [constraints, norm(u{k},2) <= umax];
-%         constraints = [constraints, norm(S*x{k}) <= p.leading * c*x{k}];
+        constraints = [constraints, norm(S*x{k}) <= p.leading * c*x{k}];
     end
     options = sdpsettings('solver', 'ecos', 'verbose', 0, 'debug', 0);
     sol = optimize(constraints, objective, options);

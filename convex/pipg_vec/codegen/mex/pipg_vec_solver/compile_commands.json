@@ -55,12 +55,6 @@
   },
   {
     "directory": "/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/codegen/mex/pipg_vec_solver",
-    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec\" -I \"./interface\" -I \"/usr/local/MATLAB/R2022b/extern/include\" -I \".\" -DMODEL=pipg_vec_solver_mex -c  sparse1.c -o build/glnxa64/sparse1.o",
-    "file": "sparse1.c",
-    "output": "build/glnxa64/sparse1.o"
-  },
-  {
-    "directory": "/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/codegen/mex/pipg_vec_solver",
     "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec\" -I \"./interface\" -I \"/usr/local/MATLAB/R2022b/extern/include\" -I \".\" -DMODEL=pipg_vec_solver_mex -c  norm.c -o build/glnxa64/norm.o",
     "file": "norm.c",
     "output": "build/glnxa64/norm.o"
@@ -76,6 +70,12 @@
     "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec\" -I \"./interface\" -I \"/usr/local/MATLAB/R2022b/extern/include\" -I \".\" -DMODEL=pipg_vec_solver_mex -c  colon.c -o build/glnxa64/colon.o",
     "file": "colon.c",
     "output": "build/glnxa64/colon.o"
+  },
+  {
+    "directory": "/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/codegen/mex/pipg_vec_solver",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec\" -I \"./interface\" -I \"/usr/local/MATLAB/R2022b/extern/include\" -I \".\" -DMODEL=pipg_vec_solver_mex -c  dot.c -o build/glnxa64/dot.o",
+    "file": "dot.c",
+    "output": "build/glnxa64/dot.o"
   },
   {
     "directory": "/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/codegen/mex/pipg_vec_solver",
@@ -103,12 +103,6 @@
   },
   {
     "directory": "/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/codegen/mex/pipg_vec_solver",
-    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec\" -I \"./interface\" -I \"/usr/local/MATLAB/R2022b/extern/include\" -I \".\" -DMODEL=pipg_vec_solver_mex -c  eml_int_forloop_overflow_check.c -o build/glnxa64/eml_int_forloop_overflow_check.o",
-    "file": "eml_int_forloop_overflow_check.c",
-    "output": "build/glnxa64/eml_int_forloop_overflow_check.o"
-  },
-  {
-    "directory": "/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/codegen/mex/pipg_vec_solver",
     "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec\" -I \"./interface\" -I \"/usr/local/MATLAB/R2022b/extern/include\" -I \".\" -DMODEL=pipg_vec_solver_mex -c  introsort.c -o build/glnxa64/introsort.o",
     "file": "introsort.c",
     "output": "build/glnxa64/introsort.o"
@@ -124,6 +118,12 @@
     "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec\" -I \"./interface\" -I \"/usr/local/MATLAB/R2022b/extern/include\" -I \".\" -DMODEL=pipg_vec_solver_mex -c  heapsort.c -o build/glnxa64/heapsort.o",
     "file": "heapsort.c",
     "output": "build/glnxa64/heapsort.o"
+  },
+  {
+    "directory": "/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/codegen/mex/pipg_vec_solver",
+    "command": "/usr/bin/gcc -fexceptions -fPIC -fno-omit-frame-pointer -pthread -D_GNU_SOURCE -DMATLAB_MEX_FILE  -O2 -fwrapv -DNDEBUG -std=c99 -I \".\" -I \"/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec\" -I \"./interface\" -I \"/usr/local/MATLAB/R2022b/extern/include\" -I \".\" -DMODEL=pipg_vec_solver_mex -c  proj_cone.c -o build/glnxa64/proj_cone.o",
+    "file": "proj_cone.c",
+    "output": "build/glnxa64/proj_cone.o"
   },
   {
     "directory": "/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/codegen/mex/pipg_vec_solver",

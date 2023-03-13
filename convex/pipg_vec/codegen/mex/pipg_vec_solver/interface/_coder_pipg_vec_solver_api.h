@@ -22,6 +22,6 @@
 
 /* Function Declarations */
 void pipg_vec_solver_api(const mxArray *const prhs[3], int32_T nlhs,
-                         const mxArray *plhs[4]);
+                         const mxArray *plhs[5]);
 
 /* End of code generation (_coder_pipg_vec_solver_api.h) */

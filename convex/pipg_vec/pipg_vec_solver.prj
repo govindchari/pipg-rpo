@@ -1,7 +1,7 @@
 <deployment-project plugin="plugin.coder" plugin-version="R2021a">
-  <configuration build-checksum="607550492" file="/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/pipg_vec_solver.prj" location="/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec" name="pipg_vec_solver" target="target.unifiedcoder" target-name="MATLAB Coder">
+  <configuration build-checksum="1545837644" file="/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/pipg_vec_solver.prj" location="/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec" name="pipg_vec_solver" target="target.unifiedcoder" target-name="MATLAB Coder">
     <profile key="profile.mex">
-      <param.BuiltInstrumentedMex />
+      <param.BuiltInstrumentedMex>false</param.BuiltInstrumentedMex>
       <param.RanInstrumentedMex>false</param.RanInstrumentedMex>
       <param.WorkingFolder>option.WorkingFolder.Project</param.WorkingFolder>
       <param.SpecifiedWorkingFolder />
@@ -27,7 +27,7 @@
       <param.RowMajor>option.RowMajor.ColumnMajor</param.RowMajor>
       <param.HighlightPotentialRowMajorIssues>true</param.HighlightPotentialRowMajorIssues>
       <param.PreserveArrayDimensions>false</param.PreserveArrayDimensions>
-      <param.EliminateSingleDimensions />
+      <param.EliminateSingleDimensions>false</param.EliminateSingleDimensions>
       <param.StackUsageMax>200000</param.StackUsageMax>
       <param.FilePartitionMethod>option.FilePartitionMethod.MapMFileToCFile</param.FilePartitionMethod>
       <param.GenerateComments>true</param.GenerateComments>
@@ -35,7 +35,7 @@
       <param.MATLABSourceCommentLineNumbers>true</param.MATLABSourceCommentLineNumbers>
       <param.CodeFormattingTool>option.CodeFormattingTool.Auto</param.CodeFormattingTool>
       <param.ReservedNameArray />
-      <param.CppStyleConst />
+      <param.CppStyleConst>true</param.CppStyleConst>
       <param.EnableDebugging>false</param.EnableDebugging>
       <param.Verbosity>option.Verbosity.Info</param.Verbosity>
       <param.ReportPotentialDifferences>false</param.ReportPotentialDifferences>
@@ -49,7 +49,7 @@
       <param.VerificationMode>option.VerificationMode.None</param.VerificationMode>
       <param.VerificationStatus>option.VerificationStatus.Passed</param.VerificationStatus>
       <param.EnableMexProfiling>false</param.EnableMexProfiling>
-      <var.BuiltWithMexProfiling />
+      <var.BuiltWithMexProfiling>false</var.BuiltWithMexProfiling>
       <param.CustomSourceCode />
       <param.CustomHeaderCode />
       <param.CustomInitializer />
@@ -75,15 +75,15 @@
       <param.EnableOpenMP>true</param.EnableOpenMP>
       <param.InitFltsAndDblsToZero>true</param.InitFltsAndDblsToZero>
       <param.ConstantInputs>option.ConstantInputs.CheckValues</param.ConstantInputs>
-      <param.EnableCRICodeCoverage />
+      <param.EnableCRICodeCoverage>true</param.EnableCRICodeCoverage>
       <param.EnableAutoParallelizationReporting>true</param.EnableAutoParallelizationReporting>
       <param.CacheDynamicArrayDataPointer>true</param.CacheDynamicArrayDataPointer>
       <param.EnableJIT>false</param.EnableJIT>
-      <param.EnableJITSilentBailOut />
+      <param.EnableJITSilentBailOut>false</param.EnableJITSilentBailOut>
       <param.CheckForIssuesJIT>true</param.CheckForIssuesJIT>
-      <param.EnableGitSupport />
-      <param.EnableAutoCommit />
-      <param.RepositoryStyle />
+      <param.EnableGitSupport>false</param.EnableGitSupport>
+      <param.EnableAutoCommit>true</param.EnableAutoCommit>
+      <param.RepositoryStyle>option.RepositoryStyle.Auto</param.RepositoryStyle>
       <unset>
         <param.BuiltInstrumentedMex />
         <param.RanInstrumentedMex />
@@ -189,7 +189,7 @@
       <param.RowMajor>option.RowMajor.ColumnMajor</param.RowMajor>
       <param.HighlightPotentialRowMajorIssues>true</param.HighlightPotentialRowMajorIssues>
       <param.PreserveArrayDimensions>false</param.PreserveArrayDimensions>
-      <param.EliminateSingleDimensions />
+      <param.EliminateSingleDimensions>false</param.EliminateSingleDimensions>
       <param.StackUsageMax>200000</param.StackUsageMax>
       <param.MultiInstanceCode />
       <param.PreserveUnusedStructFields />
@@ -210,7 +210,7 @@
       <param.CodeFormattingTool>option.CodeFormattingTool.Auto</param.CodeFormattingTool>
       <param.ClangFormatFile />
       <param.DataTypeReplacement />
-      <param.EnableCustomReplacementTypes>false</param.EnableCustomReplacementTypes>
+      <param.EnableCustomReplacementTypes />
       <param.ReplacementTypes.double />
       <param.ReplacementTypes.single />
       <param.ReplacementTypes.uint8 />
@@ -223,7 +223,7 @@
       <param.ReplacementTypes.int64 />
       <param.ReplacementTypes.char />
       <param.ReplacementTypes.logical />
-      <param.ReplacementTypes.ImportCustomTypes>false</param.ReplacementTypes.ImportCustomTypes>
+      <param.ReplacementTypes.ImportCustomTypes />
       <param.ReplacementTypes.HeaderFiles />
       <param.CppInterfaceStyle>option.CppInterfaceStyle.Functions</param.CppInterfaceStyle>
       <param.CppInterfaceClassName />
@@ -237,7 +237,7 @@
       <param.CustomSymbolStrEMXArray>emxArray_$M$N</param.CustomSymbolStrEMXArray>
       <param.CustomSymbolStrEMXArrayFcn />
       <param.ReservedNameArray />
-      <param.CppStyleConst />
+      <param.CppStyleConst>true</param.CppStyleConst>
       <param.RuntimeChecks>false</param.RuntimeChecks>
       <param.Verbose />
       <param.Verbosity>option.Verbosity.Info</param.Verbosity>
@@ -269,9 +269,9 @@
       <param.CustomSource />
       <param.CustomLibrary />
       <param.PostCodeGenCommand />
-      <param.TargetLangStandard>Auto</param.TargetLangStandard>
-      <param.CodeReplacementLibrary>None</param.CodeReplacementLibrary>
-      <param.DeprecatedCRLFlag>false</param.DeprecatedCRLFlag>
+      <param.TargetLangStandard />
+      <param.CodeReplacementLibrary />
+      <param.DeprecatedCRLFlag />
       <param.SameHardware>true</param.SameHardware>
       <param.Toolchain>Automatically locate an installed toolchain</param.Toolchain>
       <param.BuildConfiguration />
@@ -361,9 +361,9 @@
       <param.EnableTraceability />
       <param.SILPILVerbosity />
       <param.UseECoderFeatures>false</param.UseECoderFeatures>
-      <param.EnableGitSupport />
-      <param.EnableAutoCommit />
-      <param.RepositoryStyle />
+      <param.EnableGitSupport>false</param.EnableGitSupport>
+      <param.EnableAutoCommit>true</param.EnableAutoCommit>
+      <param.RepositoryStyle>option.RepositoryStyle.Auto</param.RepositoryStyle>
       <param.psCustomPrjState />
       <param.psCustomProjectFile />
       <param.psCheckConfValue />
@@ -569,10 +569,10 @@
     <param.TestSnippets>
       <item>main</item>
     </param.TestSnippets>
-    <param.ExternalFcnMajority />
-    <param.UseGlobals />
+    <param.ExternalFcnMajority>column</param.ExternalFcnMajority>
+    <param.UseGlobals>option.UseGlobals.No</param.UseGlobals>
     <param.outputfile>${PROJECT_ROOT}/pipg_vec_solver_mex.mexa64</param.outputfile>
-    <param.version />
+    <param.version>R2012a</param.version>
     <param.HasECoderFeatures>false</param.HasECoderFeatures>
     <param.HasGpuCoder>false</param.HasGpuCoder>
     <var.HasNeuralNetworkToolbox>false</var.HasNeuralNetworkToolbox>
@@ -580,11 +580,11 @@
     <param.grt.mainhtml />
     <param.CallGeneratedCodeFromTest>true</param.CallGeneratedCodeFromTest>
     <param.AutoInferDefaultFile />
-    <param.AutoInferUseVariableSize />
-    <param.AutoInferUseUnboundedSize />
-    <param.AutoInferVariableSizeThreshold />
-    <param.AutoInferUnboundedSizeThreshold />
-    <param.EnableFixedPointStep />
+    <param.AutoInferUseVariableSize>false</param.AutoInferUseVariableSize>
+    <param.AutoInferUseUnboundedSize>false</param.AutoInferUseUnboundedSize>
+    <param.AutoInferVariableSizeThreshold>1024</param.AutoInferVariableSizeThreshold>
+    <param.AutoInferUnboundedSizeThreshold>2048</param.AutoInferUnboundedSizeThreshold>
+    <param.EnableFixedPointStep>false</param.EnableFixedPointStep>
     <param.EnableScreener>true</param.EnableScreener>
     <param.AnnotationChecksum>3950923442</param.AnnotationChecksum>
     <var.LegacyTarget />
@@ -596,26 +596,26 @@
     <param.hdlParamStorage />
     <var.gc.lastOutputRoot>codegen/mex/pipg_vec_solver</var.gc.lastOutputRoot>
     <var.gc.lastOutputType>MEX_FILE</var.gc.lastOutputType>
-    <var.gc.preBuildChecksum>607550492</var.gc.preBuildChecksum>
+    <var.gc.preBuildChecksum>2074638976</var.gc.preBuildChecksum>
     <var.cfi.lastOutputRoot>codegen/mex/pipg_vec_solver</var.cfi.lastOutputRoot>
     <var.cfi.preBuildChecksum>2954419171</var.cfi.preBuildChecksum>
     <var.lastCfiTestSnippet>main</var.lastCfiTestSnippet>
     <var.outdatedOnRestore>false</var.outdatedOnRestore>
-    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_devec/projections/proj_ball.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/compute_stepsizes.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/pipg_vec_solver.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/power_iteration.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;100720254&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
-    <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_devec/projections/proj_ball.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/compute_stepsizes.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/pipg_vec_solver.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/power_iteration.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
+    <var.lastUserSourceChecksum>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;checksum&gt;&lt;includedFiles&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/compute_stepsizes.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/pipg_vec_solver.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/power_iteration.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/projections/proj_ball.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/projections/proj_cone.m&lt;/file&gt;&lt;file&gt;/home/govind/Solvers/osqp/osqp-0.6.2.post0-matlab-linux64/codegen/make_emosqp.m&lt;/file&gt;&lt;file&gt;/home/govind/Solvers/osqp/osqp-0.6.2.post0-matlab-linux64/codegen/render_workspace.m&lt;/file&gt;&lt;file&gt;/home/govind/Solvers/osqp/osqp-0.6.2.post0-matlab-linux64/osqp.m&lt;/file&gt;&lt;file&gt;/home/govind/Solvers/osqp/osqp-0.6.2.post0-matlab-linux64/osqp_mex.mexa64&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/any.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/assign.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/bsxfun.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/ceil.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/clearconic.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/clearcreationtime.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/cos.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/diff.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/false.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/fix.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/floor.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/flush.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/gethackflag.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/is.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/ishermitian.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/ismember.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/ismember_internal.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/issymmetric.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/mod.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/not.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/rem.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/repmat.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/sdpvar.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/sethackflag.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/setoperatorname.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/sign.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/sin.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/sort.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/true.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/unique.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/@sdpvar/zeros.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/@constraint/getlist.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/@lmi/flatten.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/@lmi/isnan.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/@lmi/lmi.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/@lmi/setupMeta.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/@ncvar/ncvar.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/@ndsdpvar/ndsdpvar.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/CreateBasicOperator.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/InstantiateElementWise.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/InstantiateElementWiseUnitary.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/appendYALMIPvariables.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/binvar.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/clean.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/definecreationtime.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/depends.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/derivebounds.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/double2sdpvar.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/extsubsref.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/gen_rand_hash.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/getbase.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/getbasematrix.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/getvariables.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/integer.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/intvar.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/islinear.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/lmiBasis.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/mid.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/parseLMI.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/rand_hash.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/recover.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/strmatch_octavesafe.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/uniquesafe.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/uniquestripped.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/value.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/extras/yalmip.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/operators/matrix_sdpvar_sort.m&lt;/file&gt;&lt;file&gt;/home/govind/YALMIP-master/operators/sort_internal.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/abs.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/blkdiag.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/cat.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/conj.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/cumsum.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/diag.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/disp.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/exp.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/find.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/full.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/hankel.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/horzcat.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/imag.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/ipermute.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/isreal.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/kron.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/log.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/max.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/min.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/minus.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/mtimes.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/nnz.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/norm.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/permute.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/plus.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/prod.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/real.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/reshape.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/size.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/sparse.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/sqrt.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/subsasgn.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/subsref.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/sum.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/toeplitz.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/tril.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/triu.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/builtins/@cvx/vertcat.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/commands/cvx_begin.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/commands/cvx_end.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/cvx_error.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/cvx_license.p&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/cvx_version.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/functions/@cvx/vec.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/functions/log_sum_exp.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/functions/norms.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/functions/quad_form.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/functions/sigma_max.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/functions/square_/square.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/functions/sum_square.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/functions/sum_square_abs.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvx/bcompress.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvx/buncompress.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvx/cvx.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvx/sparsify.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvx/svec.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxcnst/cvxcnst.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxcnst/double.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxcnst/logical.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxcnst/rhs.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxdual/cvxaff.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxdual/name.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxdual/type.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxobj/cvxobj.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxobj/isempty.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxobj/isequal.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxobj/length.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxobj/ndims.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxobj/numel.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxprob/cvxprob.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxprob/newcnstr.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxprob/newtemp.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxprob/newvar.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxprob/pop.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxprob/touch.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/@cvxtuple/cvxtuple.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_accept_convex.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_basis.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_bcompress.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_bcompress_mex.mexa64&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_c2r.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_check_dimension.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_check_dimlist.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_class.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_classify.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_clearpath.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_clearspath.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_collapse.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_constant.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_default_dimension.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_expert_check.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_getdual.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_global.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_id.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_ids.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_isaffine.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_isconstant.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_isnonzero.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_r2c.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_readlevel.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_reduce_size.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_remap.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_reshape.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_setpath.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_setspath.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_subs2str.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_subsasgn.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_subsref.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_use_sparse.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/lib/cvx_vexity.m&lt;/file&gt;&lt;file&gt;/usr/local/MATLAB/R2022b/cvx-a64/cvx/structures/cvx_invert_structure.m&lt;/file&gt;&lt;/includedFiles&gt;&lt;value&gt;1782655667&lt;/value&gt;&lt;/checksum&gt;</var.lastUserSourceChecksum>
+    <var.sourceSetState>&lt;?xml version="1.0" encoding="UTF-8" standalone="yes"?&gt;&lt;sourceModel&gt;&lt;primarySourceFiles&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/compute_stepsizes.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/pipg_vec_solver.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/power_iteration.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/projections/proj_ball.m&lt;/file&gt;&lt;file&gt;/home/govind/Desktop/git/pipg-rpo/convex/pipg_vec/projections/proj_cone.m&lt;/file&gt;&lt;/primarySourceFiles&gt;&lt;fixedPointSourceFiles/&gt;&lt;fixedPointSourceRegistered&gt;false&lt;/fixedPointSourceRegistered&gt;&lt;fixedPointSourceSelected&gt;false&lt;/fixedPointSourceSelected&gt;&lt;/sourceModel&gt;</var.sourceSetState>
     <param.forceMexBuild>false</param.forceMexBuild>
-    <param.NoDefaultJIT />
+    <param.NoDefaultJIT>false</param.NoDefaultJIT>
     <param.configImportActive>false</param.configImportActive>
     <var.isGpuCoder>false</var.isGpuCoder>
     <var.notGpuCoder>true</var.notGpuCoder>
     <var.boundToGui>true</var.boundToGui>
-    <var.isConfigDialog />
+    <var.isConfigDialog>false</var.isConfigDialog>
     <var.ecoderEnabled>false</var.ecoderEnabled>
-    <param.AlwaysGenerateTypedefGuards />
-    <param.RemoveDuplicateFunctionsAndTypes />
-    <param.EnableStructExplosion />
-    <param.ForceANSIC />
-    <param.NumCompileJobs />
+    <param.AlwaysGenerateTypedefGuards>false</param.AlwaysGenerateTypedefGuards>
+    <param.RemoveDuplicateFunctionsAndTypes>true</param.RemoveDuplicateFunctionsAndTypes>
+    <param.EnableStructExplosion>true</param.EnableStructExplosion>
+    <param.ForceANSIC>false</param.ForceANSIC>
+    <param.NumCompileJobs>1</param.NumCompileJobs>
     <param.mex.outputfile>pipg_vec_solver_mex</param.mex.outputfile>
     <param.grt.outputfile>pipg_vec_solver</param.grt.outputfile>
     <param.artifact>option.target.artifact.mex</param.artifact>
@@ -626,25 +626,25 @@
     <param.CppPreserveClasses>true</param.CppPreserveClasses>
     <param.CppGenerateEnumClass>true</param.CppGenerateEnumClass>
     <param.gpu.Enabled>false</param.gpu.Enabled>
-    <param.gpu.SelectCudaDevice />
+    <param.gpu.SelectCudaDevice>-1</param.gpu.SelectCudaDevice>
     <param.gpu.ComputeCapability />
     <param.gpu.CustomComputeCapability />
     <param.gpu.MallocMode />
-    <param.gpu.MallocThreshold />
-    <param.gpu.StackLimitPerThread />
-    <param.gpu.MaximumBlocksPerKernel />
+    <param.gpu.MallocThreshold>200</param.gpu.MallocThreshold>
+    <param.gpu.StackLimitPerThread>1024</param.gpu.StackLimitPerThread>
+    <param.gpu.MaximumBlocksPerKernel>0</param.gpu.MaximumBlocksPerKernel>
     <param.gpu.Benchmarking>false</param.gpu.Benchmarking>
-    <param.gpu.SafeBuild />
+    <param.gpu.SafeBuild>false</param.gpu.SafeBuild>
     <param.gpu.KernelNamePrefix />
     <param.gpu.CompilerFlags />
     <param.gpu.EnableCUBLAS>false</param.gpu.EnableCUBLAS>
     <param.gpu.EnableCUSOLVER>false</param.gpu.EnableCUSOLVER>
     <param.gpu.EnableCUFFT>false</param.gpu.EnableCUFFT>
     <param.gpu.EnableMemoryManager>false</param.gpu.EnableMemoryManager>
-    <param.gpu.BlockAlignment />
+    <param.gpu.BlockAlignment>256</param.gpu.BlockAlignment>
     <param.gpu.FreeMode />
-    <param.gpu.MinPoolSize />
-    <param.gpu.MaxPoolSize />
+    <param.gpu.MinPoolSize>8</param.gpu.MinPoolSize>
+    <param.gpu.MaxPoolSize>2048</param.gpu.MaxPoolSize>
     <var.checkIssuesGpu>false</var.checkIssuesGpu>
     <var.hasGpu>false</var.hasGpu>
     <var.isDeepLearningForMatlabCoderEnabled>true</var.isDeepLearningForMatlabCoderEnabled>
@@ -654,17 +654,17 @@
     <var.cfiTargetLibSuppression>false</var.cfiTargetLibSuppression>
     <var.hasMatlabDeepLearningSupportPackage>true</var.hasMatlabDeepLearningSupportPackage>
     <var.hasGpuDeepLearningSupportPackage>true</var.hasGpuDeepLearningSupportPackage>
-    <param.tensorrt.DataType />
+    <param.tensorrt.DataType>option.tensorrt.datatype.fp32</param.tensorrt.DataType>
     <param.tensorrt.DataPath />
-    <param.tensorrt.NumCalibrationBatches />
-    <param.cudnn.AutoTuning />
-    <param.cudnn.DataType />
+    <param.tensorrt.NumCalibrationBatches>0</param.tensorrt.NumCalibrationBatches>
+    <param.cudnn.AutoTuning>true</param.cudnn.AutoTuning>
+    <param.cudnn.DataType>option.cudnn.datatype.fp32</param.cudnn.DataType>
     <param.cudnn.CalibrationResultFile />
-    <param.arm-compute.ArmComputeVersion />
-    <param.arm-compute.ArmArchitecture />
-    <param.arm-compute.DataType />
+    <param.arm-compute.ArmComputeVersion>option.arm-compute.version.20_02_1</param.arm-compute.ArmComputeVersion>
+    <param.arm-compute.ArmArchitecture>option.arm-compute.architecture.unspecified</param.arm-compute.ArmArchitecture>
+    <param.arm-compute.DataType>option.arm-compute.datatype.fp32</param.arm-compute.DataType>
     <param.arm-compute.CalibrationResultFile />
-    <param.cmsis-nn.DataType />
+    <param.cmsis-nn.DataType>option.arm-compute.datatype.int8</param.cmsis-nn.DataType>
     <param.cmsis-nn.CalibrationResultFile />
     <param.TargetLang>option.TargetLang.C</param.TargetLang>
     <param.EnableAutoExtrinsicCalls>true</param.EnableAutoExtrinsicCalls>
@@ -672,20 +672,20 @@
     <param.UsePreconditions>false</param.UsePreconditions>
     <param.FeatureFlags />
     <param.FixedPointMode>option.FixedPointMode.None</param.FixedPointMode>
-    <param.AutoScaleLoopIndexVariables />
+    <param.AutoScaleLoopIndexVariables>false</param.AutoScaleLoopIndexVariables>
     <param.ComputedFixedPointData />
     <param.UserFixedPointData />
-    <param.DefaultWordLength />
-    <param.DefaultFractionLength />
-    <param.FixedPointSafetyMargin />
-    <param.FixedPointFimath />
-    <param.FixedPointTypeSource />
+    <param.DefaultWordLength>16</param.DefaultWordLength>
+    <param.DefaultFractionLength>4</param.DefaultFractionLength>
+    <param.FixedPointSafetyMargin>0</param.FixedPointSafetyMargin>
+    <param.FixedPointFimath>fimath('RoundingMethod', 'Floor', 'OverflowAction', 'Wrap', 'ProductMode', 'FullPrecision', 'MaxProductWordLength', 128, 'SumMode', 'FullPrecision', 'MaxSumWordLength', 128)</param.FixedPointFimath>
+    <param.FixedPointTypeSource>option.FixedPointTypeSource.SimAndDerived</param.FixedPointTypeSource>
     <param.StaticAnalysisTimeout />
-    <param.StaticAnalysisGlobalRangesOnly />
-    <param.LogAllIOValues />
-    <param.DetectOverflows />
-    <param.LogHistogram />
-    <param.ShowCoverage />
+    <param.StaticAnalysisGlobalRangesOnly>false</param.StaticAnalysisGlobalRangesOnly>
+    <param.LogAllIOValues>false</param.LogAllIOValues>
+    <param.DetectOverflows>false</param.DetectOverflows>
+    <param.LogHistogram>false</param.LogHistogram>
+    <param.ShowCoverage>true</param.ShowCoverage>
     <param.ExcludedFixedPointVerificationFiles />
     <param.ExcludedFixedPointSimulationFiles />
     <param.InstrumentedBuildChecksum />
@@ -694,16 +694,16 @@
     <param.FixedPointValidationChecksum />
     <param.FixedPointSourceCodeChecksum />
     <param.FixedPointFunctionReplacements />
-    <param.OptimizeWholeNumbers />
-    <param.ContainerTypes />
+    <param.OptimizeWholeNumbers>true</param.OptimizeWholeNumbers>
+    <param.ContainerTypes>false</param.ContainerTypes>
     <param.GeneratedFixedPointFileSuffix>_fixpt</param.GeneratedFixedPointFileSuffix>
     <param.PlotFunction />
-    <param.SDIPlot />
-    <param.EnableCodeEfficiencyChecks />
-    <param.DefaultFixedPointSignedness />
-    <param.FixedPointTypeProposalMode />
-    <param.EnableFixedPointStep />
-    <var.lastFixedPointAction />
+    <param.SDIPlot>false</param.SDIPlot>
+    <param.EnableCodeEfficiencyChecks>false</param.EnableCodeEfficiencyChecks>
+    <param.DefaultFixedPointSignedness>option.DefaultFixedPointSignedness.Automatic</param.DefaultFixedPointSignedness>
+    <param.FixedPointTypeProposalMode>option.FixedPointTypeProposalMode.ProposeFractionLengths</param.FixedPointTypeProposalMode>
+    <param.EnableFixedPointStep>false</param.EnableFixedPointStep>
+    <var.lastFixedPointAction>option.fixedPointAction.none</var.lastFixedPointAction>
     <var.lastSimContext />
     <var.lastVerifyContext />
     <param.fpDataRoot />
@@ -711,9 +711,9 @@
     <var.snapshotChecksum />
     <param.fpLastConvertChecksum />
     <var.functionBlockSid />
-    <param.fptSignedness />
-    <var.FixedPointAnalysisMode />
-    <param.FixedPointUseDesignRanges />
+    <param.fptSignedness>false</param.fptSignedness>
+    <var.FixedPointAnalysisMode>option.FixedPointAnalysisMode.Sim</var.FixedPointAnalysisMode>
+    <param.FixedPointUseDesignRanges>false</param.FixedPointUseDesignRanges>
     <unset>
       <param.objective />
       <param.ExternalFcnMajority />

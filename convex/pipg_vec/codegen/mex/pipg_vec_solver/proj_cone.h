@@ -3,9 +3,9 @@
  * course requirements at degree granting institutions only.  Not for
  * government, commercial, or other organizational use.
  *
- * sparse1.h
+ * proj_cone.h
  *
- * Code generation for function 'sparse1'
+ * Code generation for function 'proj_cone'
  *
  */
 
@@ -22,7 +22,7 @@
 #include <string.h>
 
 /* Function Declarations */
-real_T sparse_full(const emlrtStack *sp, const emxArray_real_T *this_d,
-                   const emxArray_int32_T *this_colidx);
+void binary_expand_op(real_T in1[3], real_T in2, const int8_T in3[3],
+                      real_T in4, const emxArray_real_T *in5, real_T in6);
 
-/* End of code generation (sparse1.h) */
+/* End of code generation (proj_cone.h) */

@@ -28,16 +28,9 @@ static void pipg_vec_solver_once(void)
 
 void pipg_vec_solver_initialize(void)
 {
-  emlrtStack st = {
-      NULL, /* site */
-      NULL, /* tls */
-      NULL  /* prev */
-  };
   mexFunctionCreateRootTLS();
-  st.tls = emlrtRootTLSGlobal;
-  emlrtBreakCheckR2012bFlagVar = emlrtGetBreakCheckFlagAddressR2022b(&st);
-  emlrtClearAllocCountR2012b(&st, false, 0U, NULL);
-  emlrtEnterRtStackR2012b(&st);
+  emlrtClearAllocCountR2012b(emlrtRootTLSGlobal, false, 0U, NULL);
+  emlrtEnterRtStackR2012b(emlrtRootTLSGlobal);
   if (emlrtFirstTimeR2012b(emlrtRootTLSGlobal)) {
     pipg_vec_solver_once();
   }

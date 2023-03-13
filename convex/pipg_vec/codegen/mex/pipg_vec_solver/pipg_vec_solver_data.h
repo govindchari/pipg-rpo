@@ -22,13 +22,6 @@
 
 /* Variable Declarations */
 extern emlrtCTX emlrtRootTLSGlobal;
-extern const volatile char_T *emlrtBreakCheckR2012bFlagVar;
 extern emlrtContext emlrtContextGlobal;
-extern emlrtRSInfo g_emlrtRSI;
-extern emlrtRSInfo h_emlrtRSI;
-extern emlrtRSInfo i_emlrtRSI;
-extern emlrtRSInfo cb_emlrtRSI;
-extern emlrtRTEInfo b_emlrtRTEI;
-extern const char_T cv[26];
 
 /* End of code generation (pipg_vec_solver_data.h) */

@@ -25,7 +25,7 @@ void mexFunction(int32_T nlhs, mxArray *plhs[], int32_T nrhs,
   /* Module initialization. */
   pipg_vec_solver_initialize();
   /* Dispatch the entry-point. */
-  pipg_vec_solver_mexFunction(nlhs, plhs, nrhs, prhs);
+  unsafe_pipg_vec_solver_mexFunction(nlhs, plhs, nrhs, prhs);
   /* Module termination. */
   pipg_vec_solver_terminate();
 }
@@ -37,24 +37,19 @@ emlrtCTX mexFunctionCreateRootTLS(void)
   return emlrtRootTLSGlobal;
 }
 
-void pipg_vec_solver_mexFunction(int32_T nlhs, mxArray *plhs[4], int32_T nrhs,
-                                 const mxArray *prhs[3])
+void unsafe_pipg_vec_solver_mexFunction(int32_T nlhs, mxArray *plhs[5],
+                                        int32_T nrhs, const mxArray *prhs[3])
 {
-  emlrtStack st = {
-      NULL, /* site */
-      NULL, /* tls */
-      NULL  /* prev */
-  };
-  const mxArray *outputs[4];
+  const mxArray *outputs[5];
   int32_T i;
-  st.tls = emlrtRootTLSGlobal;
   /* Check for proper number of arguments. */
   if (nrhs != 3) {
-    emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:WrongNumberOfInputs", 5, 12, 3, 4,
-                        15, "pipg_vec_solver");
+    emlrtErrMsgIdAndTxt(emlrtRootTLSGlobal, "EMLRT:runTime:WrongNumberOfInputs",
+                        5, 12, 3, 4, 15, "pipg_vec_solver");
   }
-  if (nlhs > 4) {
-    emlrtErrMsgIdAndTxt(&st, "EMLRT:runTime:TooManyOutputArguments", 3, 4, 15,
+  if (nlhs > 5) {
+    emlrtErrMsgIdAndTxt(emlrtRootTLSGlobal,
+                        "EMLRT:runTime:TooManyOutputArguments", 3, 4, 15,
                         "pipg_vec_solver");
   }
   /* Call the function. */

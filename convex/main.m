@@ -1,10 +1,8 @@
 clear;clc;close all
 
-addpath pipg_devec/
-addpath pipg_devec/projections/
 addpath pipg_vec/
+addpath pipg_vec/projections/
 addpath utils/
-addpath double_integrator/
 
 %% Rendezvous Problem
 params = params();
@@ -22,7 +20,9 @@ fprintf("ECOS Solve Time: %4.1f ms\n", solve_time)
 % Solve with Vectorized PIPG
 prob = pipg_vec_struct(params);
 opts = pipg_vec_opts();
-[Z_pipg, pc, dc, pipg_time] = pipg_vec_solver_mex(params, prob, opts);
+[Z_pipg, W_pipg, pc, dc, pipg_time] = pipg_vec_solver_mex(params, prob, opts);
+W_pipg = reshape(W_pipg, params.nx, params.N-1);
+
 [X_pipg, U_pipg] = devec_sol(Z_pipg, params);
 [X_pipg, U_pipg] = unscale(X_pipg, U_pipg, params);
 
@@ -33,43 +33,21 @@ acc = 100 * max(norm(X_pipg(:)-X(:))/norm(X(:)), norm(upipg(1:end-params.nu)-U(:
 fprintf("PIPG Solve Time: %4.1f ms\n", pipg_time)
 fprintf("Within %4.4f percent of ECOS\n", acc)
 
-% plotall(X_pipg, U_pipg, params)
+plotall(X_pipg, U_pipg, params)
+
+figure
+plot(X(2,:),X(1,:),"LineWidth",2)
+hold on
+plot(X_pipg(2,:),X_pipg(1,:),"LineWidth",2)
+title("ECOS vs PIPG")
+legend("ECOS","PIPG")
+axis equal
+grid on
 
 % figure
 % semilogy(pc, 'o', "LineWidth",1)
 % hold on
 % semilogy(dc, 'o', "LineWidth",1)
 % grid on
-% 
-% figure
-% plot(X(2,:),X(1,:),"LineWidth",2)
-% hold on
-% plot(X_pipg(2,:),X_pipg(1,:),"LineWidth",2)
-% title("ECOS vs PIPG")
-% legend("ECOS","PIPG")
-% grid on
 
-%% Double Integrator Test
-% params = double_integrator_params();
-% prob = pipg_struct(params);
-% 
-% [X, U, solve_time, parse_time, solve_status] = double_integrator_test(params);
-% fprintf("Solve Status: %s\n", solve_status)
-% fprintf("Parse Time: %4.1f ms\n", parse_time)
-% fprintf("Solve Time: %4.1f ms\n", solve_time)
-% plot_double_integrator(X, U, params)
-% 
-% [X_pipg, U_pipg, pc, dc] = pipg_solver(params, prob);
-% 
-% figure
-% plot(X_pipg(:,1))
-% hold on
-% plot(X(1,:))
-% 
-% plot_double_integrator(X_pipg', U_pipg, params)
-% figure
-% semilogy(pc, "LineWidth",1)
-% hold on
-% semilogy(dc, "LineWidth",1)
-% grid on
 

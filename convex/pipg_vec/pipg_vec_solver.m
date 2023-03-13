@@ -1,4 +1,4 @@
-function [Z,primal_conv,dual_conv,solve_time] = pipg_vec_solver(par, p, opts)
+function [Z,W,primal_conv,dual_conv,solve_time] = pipg_vec_solver(par, p, opts)
     function z = project_D(z, par, p)
         z(1:par.nx) = par.x0s;
         z(( (par.N - 1) * par.nx) + 1 : par.N * par.nx) = par.xNs;
@@ -7,11 +7,12 @@ function [Z,primal_conv,dual_conv,solve_time] = pipg_vec_solver(par, p, opts)
         % State and Control Constraints
         for i = 1 : par.N
             idx_u = par.N * par.nx + (i-1) * par.nu + 1 : par.N * par.nx + i * par.nu;
+            idx_r = (i - 1) * par.nx + 1 : (i - 1) * par.nx + 3;
             idx_v = (i - 1) * par.nx + 4 : i * par.nx;
 
             z(idx_u) = proj_ball(z(idx_u), p.umax);
+            z(idx_r) = proj_cone(z(idx_r), cos(par.th_ac), [0;1;0]);
             z(idx_v) = proj_ball(z(idx_v), p.vmax);
-
         end
     end
     tic
@@ -59,5 +60,6 @@ function [Z,primal_conv,dual_conv,solve_time] = pipg_vec_solver(par, p, opts)
         k = k + 1;
     end
     Z = p.xi;
+    W = p.eta;
     solve_time = toc * 1000;
 end

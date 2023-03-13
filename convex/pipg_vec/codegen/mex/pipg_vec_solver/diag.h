@@ -22,7 +22,7 @@
 #include <string.h>
 
 /* Function Declarations */
-void sparse_diag(const emlrtStack *sp, const emxArray_real_T *this_d,
+void sparse_diag(const emxArray_real_T *this_d,
                  const emxArray_int32_T *this_colidx,
                  const emxArray_int32_T *this_rowidx, emxArray_real_T *y_d,
                  emxArray_int32_T *y_colidx, emxArray_int32_T *y_rowidx);

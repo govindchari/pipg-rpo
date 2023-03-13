@@ -22,7 +22,6 @@
 #include <string.h>
 
 /* Function Declarations */
-void eml_float_colon(const emlrtStack *sp, real_T a, real_T b,
-                     emxArray_real_T *y);
+void eml_float_colon(real_T a, real_T b, emxArray_real_T *y);
 
 /* End of code generation (colon.h) */

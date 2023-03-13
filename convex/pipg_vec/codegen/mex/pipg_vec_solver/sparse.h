@@ -22,7 +22,7 @@
 #include <string.h>
 
 /* Function Declarations */
-void sparse(const emlrtStack *sp, real_T varargin_1, emxArray_real_T *y_d,
-            emxArray_int32_T *y_colidx, emxArray_int32_T *y_rowidx);
+void sparse(real_T varargin_1, emxArray_real_T *y_d, emxArray_int32_T *y_colidx,
+            emxArray_int32_T *y_rowidx);
 
 /* End of code generation (sparse.h) */

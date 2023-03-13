@@ -22,7 +22,6 @@
 #include <string.h>
 
 /* Function Declarations */
-void introsort(const emlrtStack *sp, emxArray_int32_T *x, int32_T xstart,
-               int32_T xend);
+void introsort(emxArray_int32_T *x, int32_T xstart, int32_T xend);
 
 /* End of code generation (introsort.h) */

@@ -15,8 +15,8 @@ function opts = pipg_vec_opts()
     %%%%%%%%%%%%%%%%%%%%%%%%%
 
     opts.check_iter = 50;
-    opts.eps_rel = 1e-4;
-    opts.eps_abs = 1e-4;
+    opts.eps_rel = 8e-5;
+    opts.eps_abs = 8e-5;
     opts.max_iter = 10000;
 
     %%%%%%%%%%%%%%%%%%%%%%%

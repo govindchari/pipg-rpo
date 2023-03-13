@@ -26,7 +26,7 @@ MEXFUNCTION_LINKAGE void mexFunction(int32_T nlhs, mxArray *plhs[],
 
 emlrtCTX mexFunctionCreateRootTLS(void);
 
-void pipg_vec_solver_mexFunction(int32_T nlhs, mxArray *plhs[4], int32_T nrhs,
-                                 const mxArray *prhs[3]);
+void unsafe_pipg_vec_solver_mexFunction(int32_T nlhs, mxArray *plhs[5],
+                                        int32_T nrhs, const mxArray *prhs[3]);
 
 /* End of code generation (_coder_pipg_vec_solver_mex.h) */
