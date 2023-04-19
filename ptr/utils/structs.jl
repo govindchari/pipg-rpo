@@ -23,10 +23,10 @@ struct IDX
 end
 struct PARAMS
     # Initial Condition
+    n::Float64              # Mean motion
     x0::Array{Float64,1}
     xT::Array{Float64,1}
     umax::Float64           # Max delta-v
-    n::Float64              # Mean motion
 
     function PARAMS(n, x0, xT, umax)
         new(n, x0, xT, umax)
@@ -78,9 +78,7 @@ mutable struct ptr
     # Problem paramters
     par::PARAMS
 
-    function ptr(K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS)
-        nx = 6
-        nu = 3
+    function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS)
         Nsub = 10
         wD = 1
         wDσ = 1

@@ -5,7 +5,7 @@ function initialize!(p::ptr)
     p.xref[:, 1] = par.x0
     p.xref[:, p.K] = par.xT
 
-    p.uref[:, 1] = [0.0; 0.0; p.xref[idx.m, 1] * par.g]
+    p.uref[:, 1] = [0.0; 0.0; 0.0]
     p.uref[:, p.K] = [0.0; 0.0; 0.0]
 
     idx_r = 1:3
@@ -18,4 +18,5 @@ function initialize!(p::ptr)
         p.uref[:, k] = [0.0; 0.0; 0.0]
     end
     p.σref = 2 * norm(par.x0 - par.xT) / (par.umax * p.K)
+    p.σref = 1.0
 end
