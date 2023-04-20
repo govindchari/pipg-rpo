@@ -35,9 +35,16 @@ function p = pipg_vec_struct(par)
         H(i,:) = H(i,:)/norm(H(i,:), Inf);
     end
     H = sparse(H);
+    Ht = sparse(H');
+%     tic
+%     [Q,~,P] = qr(Ht, "econ");
+%     toc
+% 
+%     p.H = sparse(Q');
+%     p.Ht = sparse(Q);
 
     p.H = H;
-    p.Ht = H';
+    p.Ht = Ht;
 
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Optimizer Variables %%%
