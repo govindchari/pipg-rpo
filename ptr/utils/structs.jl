@@ -82,7 +82,7 @@ mutable struct ptr
         Nsub = 10
         wD = 1
         wDσ = 1
-        wnu = 5e4
+        wnu = 1e7
         dτ = 1 / (K - 1)
 
         new(nx, nu, K, dτ, Nsub, wD, wDσ, wnu, f, dfx, dfu, zeros(nx, K), zeros(nu, K), 0.0, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par)
