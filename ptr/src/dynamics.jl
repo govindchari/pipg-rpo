@@ -1,6 +1,6 @@
 # Clohessy-Wiltshire Dynamics (x = [r v])
 function f(x, u)
-    return [x[1]; x[2]; x[3]; 3 * n^2 * x[1] + 2 * n * x[5]; -2 * n * x[4]; -n^2 * x[3]]
+    return [x[4]; x[5]; x[6]; 3 * n^2 * x[1] + 2 * n * x[5]; -2 * n * x[4]; -n^2 * x[3]]
 end
 function dfx(x, u)
     A = [0 0 0 1 0 0

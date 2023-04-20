@@ -70,27 +70,34 @@ function getState(τ::Float64, p::ptr)
     k = Int(floor(τ / p.dτ)) + 1
     t0 = (k - 1) * p.dτ
     dt = τ - t0
-    if (dt == 0)
-        xprop = p.xref[:, k]
+    if (abs(dt) <= 1e-8)
+        # Due to impulse model, we instintaneously change velocity
+        xprop = p.xref[:, k] + [0; 0; 0; p.uref[:, k]]
     else
         df(t, x, p) = p.σref * p.f(x, u_interp(t, p))
         h = p.dτ / p.Nsub
         nsub = Int(ceil(dt / h))
-        xprop = RK4(df, p.xref[:, k], t0, dt, nsub, p)
+
+        # Due to impulse model, we instintaneously change velocity
+        xprop = RK4(df, p.xref[:, k] + [0; 0; 0; p.uref[:, k]], t0, dt, nsub, p)
     end
     return xprop
 end
+# function u_interp(τ::Float64, p::ptr)
+#     # Uses FOH to interpolate control between nodes
+#     # Get control input at τ
+#     k = Int(floor(τ / p.dτ)) + 1
+#     lm = (k * p.dτ - τ) / p.dτ
+#     lp = (τ - (k - 1) * p.dτ) / p.dτ
+#     if (k == p.K)
+#         return p.uref[:, k]
+#     else
+#         return lm * p.uref[:, k] + lp * p.uref[:, k+1]
+#     end
+# end
 function u_interp(τ::Float64, p::ptr)
-    # Uses FOH to interpolate control between nodes
-    # Get control input at τ
-    k = Int(floor(τ / p.dτ)) + 1
-    lm = (k * p.dτ - τ) / p.dτ
-    lp = (τ - (k - 1) * p.dτ) / p.dτ
-    if (k == p.K)
-        return p.uref[:, k]
-    else
-        return lm * p.uref[:, k] + lp * p.uref[:, k+1]
-    end
+    # Impulse model control interpolation
+    return zeros(p.nu, 1)
 end
 function RK4(dz::Function, z0::Array{Float64,1}, t0::Float64, dt::Float64, Nsub::Int64, p::ptr)
     # Uses RK4 to propagate z0 according to dz from t0 to t0 + dt with Nsub steps
