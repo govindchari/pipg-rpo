@@ -27,9 +27,15 @@ struct PARAMS
     x0::Array{Float64,1}
     xT::Array{Float64,1}
     umax::Float64           # Max delta-v
+    rc::Array{Float64,1}    # Keepout Zone Center
+    rho::Float64            # Keepout Zone Radius
+    Px::Diagonal{Float64, Vector{Float64}}    # State Scaling
+    Pu::Diagonal{Float64, Vector{Float64}}    # Control Scaling
+    Pσ::Float64    # Dilation Scaling
 
-    function PARAMS(n, x0, xT, umax)
-        new(n, x0, xT, umax)
+    function PARAMS(n, x0, xT, umax, rc, rho, Px, Pu, Pσ)
+        @assert maximum(diag(Pu)) == minimum(diag(Pu))
+        new(n, x0, xT, umax, rc, rho, Px, Pu, Pσ)
     end
 end
 mutable struct ptr
@@ -44,7 +50,8 @@ mutable struct ptr
     Nsub::Int64   # Number of integration subintervals for discretization
     wD::Float64   # Weight on trust region
     wDσ::Float64  # Weight on time trust region
-    wnu::Float64  # Virtual control weight
+    wvc::Float64  # Virtual control weight
+    wvb::Float64  # Virtual control weight
 
     # Dynamics and Jacobians
     f::Function   # CT Dynamics
@@ -61,6 +68,7 @@ mutable struct ptr
 
     # Virtual Control and Trust Region Size
     vc::Array{Float64,2}
+    vb::Array{Float64,1}
     Δ::Array{Float64,1}
     Δσ::Float64
 
@@ -80,11 +88,17 @@ mutable struct ptr
 
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS)
         Nsub = 10
+        # wD = 1e-4
+        # wDσ = 1e-6
+        # wvc = 1
+
         wD = 1
-        wDσ = 1
-        wnu = 1e4
+        wDσ = 1e-2
+        wvc = 1e2
+        wvb = 1
+
         dτ = 1 / (K - 1)
 
-        new(nx, nu, K, dτ, Nsub, wD, wDσ, wnu, f, dfx, dfu, zeros(nx, K), zeros(nu, K), 0.0, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par)
+        new(nx, nu, K, dτ, Nsub, wD, wDσ, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), 0.0, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), zeros(K), 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par)
     end
 end
