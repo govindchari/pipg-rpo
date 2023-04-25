@@ -88,9 +88,6 @@ mutable struct ptr
 
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS)
         Nsub = 10
-        # wD = 1e-4
-        # wDσ = 1e-6
-        # wvc = 1
 
         wD = 1
         wDσ = 1e-2
