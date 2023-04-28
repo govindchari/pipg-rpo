@@ -21,8 +21,15 @@ function solveSubproblem!(p::ptr)
 
     par = p.par
 
-    # Objective
-    objective = (sumsquares(u) + p.wD * norm(Δ) + p.wDσ * norm(Δσ) + p.wvc * norm(nu, 1) + p.wvb * norm(vb, 1)) / max(p.wvc, p.wvb)
+    # Minimuim Control Effort
+    # objective = (sumsquares(u) + p.wD * norm(Δ) + p.wDσ * norm(Δσ) + p.wvc * norm(nu, 1) + p.wvb * norm(vb, 1)) / max(p.wvc, p.wvb)
+
+    # Minimum Fuel
+    objective = p.wD * norm(Δ) + p.wDσ * norm(Δσ) + p.wvc * norm(nu, 1) + p.wvb * norm(vb, 1)
+    for k = 1:p.K
+        objective += norm(u[:, k], 2)
+    end
+    objective /= max(p.wvc, p.wvb)
 
     # Scaled Dynamics Matrices
     A(k) = par.Px \ p.A[:, :, k] * par.Px

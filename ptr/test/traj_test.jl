@@ -9,7 +9,7 @@ include("../src/dynamics.jl")
 include("../src/solver.jl")
 include("../src/subproblem.jl")
 
-K = 26
+K = 25
 n = 0.00113
 x0 = [200.0;1000.0;200.0;0;0;0]
 xT = zeros(6)
@@ -20,12 +20,11 @@ nx = 6
 nu = 3
 
 Pu = umax * I(3)
-Px = Diagonal([1000.0;1000.0;1000.0;1;1;1])
+Px = Diagonal([200.0;1000.0;200.0;1;1;1])
 Pσ = 4000.0
 
 par = PARAMS(n, x0, xT, umax, rc, rho, Px, Pu, Pσ)
 p = ptr(nx, nu, K, f, dfx, dfu, par)
 solveTraj!(p)
 
-println("Objective: ", sum(p.uref[:].^2))
 plot_all(p)

@@ -90,8 +90,8 @@ mutable struct ptr
         Nsub = 10
 
         wD = 1
-        wDσ = 1e-2
-        wvc = 1e2
+        wDσ = 1e-1
+        wvc = 0.3e2
         wvb = 1
 
         dτ = 1 / (K - 1)

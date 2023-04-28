@@ -1,4 +1,4 @@
-function FOH_discretize!(p::ptr)
+function discretize!(p::ptr, ::FirstOrderHold)
     for k = 1:p.K-1
         idx = p.idx
 

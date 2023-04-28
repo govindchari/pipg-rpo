@@ -9,7 +9,7 @@ function solveTraj!(p::ptr)
     println("iter       σ         |νc|       |νb|        |Δ|        |Δσ|    ")
     println("--------------------------------------------------------------")
     for k = 1:15
-        FOH_discretize!(p)
+        discretize!(p)
         solveSubproblem!(p)
         log(k, p)
     end

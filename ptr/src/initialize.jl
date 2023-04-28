@@ -18,5 +18,4 @@ function initialize!(p::ptr)
         p.uref[:, k] = [0.0; 0.0; 0.0]
     end
     p.σref = 2 * norm(par.x0 - par.xT) / (par.umax * p.K)
-    p.σref = 1000.0
 end
