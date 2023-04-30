@@ -1,5 +1,4 @@
 function initialize!(p::ptr)
-    idx = p.idx
     par = p.par
 
     p.xref[:, 1] = par.x0

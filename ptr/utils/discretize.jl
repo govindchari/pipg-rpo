@@ -1,4 +1,4 @@
-function discretize!(p::ptr, ::FirstOrderHold)
+function discretize!(p::ptr)
     for k = 1:p.K-1
         idx = p.idx
 
