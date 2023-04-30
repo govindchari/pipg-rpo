@@ -61,7 +61,7 @@ mutable struct ptr
     # Reference Trajectories
     xref::Array{Float64,2} # Reference state trajectory
     uref::Array{Float64,2} # Reference control trajectory
-    σref::Float64          # Reference time dilation
+    σref                   # Reference time dilation
 
     # Integrated Trajectory
     xint::Array{Float64,2}
@@ -70,10 +70,9 @@ mutable struct ptr
     vc::Array{Float64,2}
     vb::Array{Float64,1}
     Δ::Array{Float64,1}
-    Δσ::Float64
+    Δσ
 
     # Discrete Dynamics
-
     idx::IDX
     xprop::Array{Float64,2}  # Propagated state
     def::Array{Float64,1}    # Defect
@@ -86,7 +85,14 @@ mutable struct ptr
     # Problem paramters
     par::PARAMS
 
-    function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS)
+    # Discretiation Type
+    disc::Symbol             # Either :foh or :impulsive
+
+    # Dilation Type
+    dilation::Symbol         # Either :single or :multiple
+
+
+    function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
 
         wD = 1
@@ -96,6 +102,20 @@ mutable struct ptr
 
         dτ = 1 / (K - 1)
 
-        new(nx, nu, K, dτ, Nsub, wD, wDσ, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), 0.0, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), zeros(K), 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par)
+        if (disc != :foh && disc != :impulsive)
+            throw(ArgumentError("disc must be :foh or :impulsive"))
+        end
+
+        if (dilation != :single && dilation != :multiple)
+            throw(ArgumentError("dilation must be :single or :multiple"))
+        end
+
+        if (dilation == :single)
+            σref = 0.0
+        elseif (dilation == :multiple)
+            σref = zeros(K - 1)
+        end
+
+        new(nx, nu, K, dτ, Nsub, wD, wDσ, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), zeros(K), σref, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation)
     end
 end

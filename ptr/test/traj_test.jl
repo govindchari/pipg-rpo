@@ -24,7 +24,7 @@ Px = Diagonal([200.0;1000.0;200.0;1;1;1])
 Pσ = 4000.0
 
 par = PARAMS(n, x0, xT, umax, rc, rho, Px, Pu, Pσ)
-p = ptr(nx, nu, K, f, dfx, dfu, par)
+p = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :single)
 solveTraj!(p)
 
 plot_all(p)
