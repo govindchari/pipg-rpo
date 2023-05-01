@@ -10,8 +10,6 @@ function solveTraj!(p::ptr)
     println("--------------------------------------------------------------")
     for k = 1:15
         discretize!(p)
-        # display(p.A[:,:,1])
-        # println(p.S)
         solveSubproblem!(p)
         log(k, p)
     end
