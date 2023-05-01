@@ -45,16 +45,7 @@ function df(τ::Float64, P::Array{Float64,1}, p::ptr)
     F = factorize(Pphi_mat)
 
     dP = zeros(idx.N)
-    if (p.dilation == :single)
-        dP[idx.x] = p.σref * p.f(Px, u_interp(τ, p))
-    elseif (p.dilation == :multiple)
-
-        # Artifact of ZOH on σ
-        if (k == p.K)
-            k -= 1
-        end
-        dP[idx.x] = p.σref[k] * p.f(Px, u_interp(τ, p))
-    end
+    dP[idx.x] = p.σref * p.f(Px, u_interp(τ, p))
     dP[idx.phi] = reshape(A * Pphi_mat, (p.nx^2, 1))
     dP[idx.Bm] = reshape(F \ (lm * B), (p.nx * p.nu, 1))
     dP[idx.Bp] = reshape(F \ (lp * B), (p.nx * p.nu, 1))
@@ -68,19 +59,8 @@ function getCTMatrices(τ::Float64, p::ptr)
     stateProp = getState(τ, p)
     uinterp = u_interp(τ, p)
 
-    if (p.dilation == :single)
-        A = p.σref * p.dfx(stateProp, uinterp)
-        B = p.σref * p.dfu(stateProp, uinterp)
-    elseif (p.dilation == :multiple)
-        k = Int(floor(τ / p.dτ)) + 1
-
-        # Artifact of ZOH on σ
-        if (k == p.K)
-            k -= 1
-        end
-        A = p.σref[k] * p.dfx(stateProp, uinterp)
-        B = p.σref[k] * p.dfu(stateProp, uinterp)
-    end
+    A = p.σref * p.dfx(stateProp, uinterp)
+    B = p.σref * p.dfu(stateProp, uinterp)
     S = p.f(stateProp, uinterp)
     z = -reshape(A, (p.nx, p.nx)) * stateProp - reshape(B, (p.nx, p.nu)) * uinterp
     return A, B, S, z
@@ -92,21 +72,17 @@ function getState(τ::Float64, p::ptr)
     dt = τ - t0
     if (abs(dt) <= 1e-8)
         if (p.disc == :impulsive)
+            # Due to impulsive model, we instintaneously change velocity
             xprop = p.xref[:, k] + [0; 0; 0; p.uref[:, k]]
         elseif (p.disc == :foh)
             xprop = p.xref[:, k]
         end
     else
-        if (p.dilation == :single)
-            σ = p.σref
-        elseif (p.dilation == :multiple)
-            k = Int(floor(τ / p.dτ)) + 1
-            σ = p.σref[k]
-        end
-        df(t, x, p) = σ * p.f(x, u_interp(t, p))
+        df(t, x, p) = p.σref * p.f(x, u_interp(t, p))
         h = p.dτ / p.Nsub
         nsub = Int(ceil(dt / h))
         if (p.disc == :impulsive)
+            # Due to impulsive model, we instintaneously change velocity
             xprop = RK4(df, p.xref[:, k] + [0; 0; 0; p.uref[:, k]], t0, dt, nsub, p)
         elseif (p.disc == :foh)
             xprop = RK4(df, p.xref[:, k], t0, dt, nsub, p)

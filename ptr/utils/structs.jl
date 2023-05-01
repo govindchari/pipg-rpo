@@ -27,15 +27,17 @@ struct PARAMS
     x0::Array{Float64,1}
     xT::Array{Float64,1}
     umax::Float64           # Max delta-v
+    σmin::Float64           # Min time dilation per interval
+    σmax::Float64           # Max time dilation per interval
     rc::Array{Float64,1}    # Keepout Zone Center
     rho::Float64            # Keepout Zone Radius
-    Px::Diagonal{Float64, Vector{Float64}}    # State Scaling
-    Pu::Diagonal{Float64, Vector{Float64}}    # Control Scaling
+    Px::Diagonal{Float64,Vector{Float64}}    # State Scaling
+    Pu::Diagonal{Float64,Vector{Float64}}    # Control Scaling
     Pσ::Float64    # Dilation Scaling
 
-    function PARAMS(n, x0, xT, umax, rc, rho, Px, Pu, Pσ)
+    function PARAMS(n, x0, xT, umax, σmin, σmax, rc, rho, Px, Pu, Pσ)
         @assert maximum(diag(Pu)) == minimum(diag(Pu))
-        new(n, x0, xT, umax, rc, rho, Px, Pu, Pσ)
+        new(n, x0, xT, umax, σmin, σmax, rc, rho, Px, Pu, Pσ)
     end
 end
 mutable struct ptr
@@ -95,12 +97,10 @@ mutable struct ptr
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
 
-        wD = 1
-        wDσ = 1e-1
-        wvc = 0.3e2
+        wD = 2
+        wDσ = 1
+        wvc = 1e2
         wvb = 1
-
-        dτ = 1 / (K - 1)
 
         if (disc != :foh && disc != :impulsive)
             throw(ArgumentError("disc must be :foh or :impulsive"))
@@ -112,8 +112,10 @@ mutable struct ptr
 
         if (dilation == :single)
             σref = 0.0
+            dτ = 1 / (K - 1)
         elseif (dilation == :multiple)
             σref = zeros(K - 1)
+            dτ = 1.0
         end
 
         new(nx, nu, K, dτ, Nsub, wD, wDσ, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), zeros(K), σref, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation)

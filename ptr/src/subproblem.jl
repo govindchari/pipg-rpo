@@ -1,11 +1,11 @@
-using Convex, ECOS
+using Convex, ECOS, SCS
 
 function solveSubproblem!(p::ptr)
 
     # Scaled optimization variables
     x = Variable(p.nx, p.K)
     u = Variable(p.nu, p.K)
-    σ = Variable(1)
+    σ = Variable(p.K - 1)
 
     nu = Variable(p.nx * (p.K - 1))
     vb = Variable(p.K)
@@ -36,9 +36,8 @@ function solveSubproblem!(p::ptr)
     B(k) = par.Px \ p.A[:, 4:6, k] * par.Pu
     S(k) = par.Px \ p.S[:, k] * par.Pσ
     z(k) = par.Px \ p.z[:, k]
-
     constraints = Constraint[
-        x[:, k+1] == A(k) * x[:, k] + B(k) * u[:, k] + S(k) * σ + z(k) + nu[(k-1)*p.nx+1:k*p.nx] for k in 1:p.K-1
+        x[:, k+1] == A(k) * x[:, k] + B(k) * u[:, k] + S(k) * σ[k] + z(k) + nu[(k-1)*p.nx+1:k*p.nx] for k in 1:p.K-1
     ]
 
     # Boundary Conditions
@@ -48,8 +47,8 @@ function solveSubproblem!(p::ptr)
 
     # State Constraints (Keepout Zone)
     Xi(k) = (p.xref[1:3, k] - par.rc) / norm((p.xref[1:3, k] - par.rc))
-    for k = 1:p.K      
-        push!(constraints, par.rho <= norm(p.xref[1:3, k] - par.rc) + dot(Xi(k), (par.Px[1:3,1:3] * x[1:3, k] - p.xref[1:3, k])) + vb[k])
+    for k = 1:p.K
+        push!(constraints, par.rho <= norm(p.xref[1:3, k] - par.rc) + dot(Xi(k), (par.Px[1:3, 1:3] * x[1:3, k] - p.xref[1:3, k])) + vb[k])
         push!(constraints, vb[k] >= 0)
     end
 
@@ -58,19 +57,23 @@ function solveSubproblem!(p::ptr)
         push!(constraints, norm(u[:, k]) <= par.umax / maximum(diag(par.Pu)))
     end
 
+    # Dilation Constraints
+    for k = 1:p.K-1
+        push!(constraints, σ[k] >= par.σmin / par.Pσ, σ[k] <= par.σmax / par.Pσ)
+    end
+
     # Trust Regions
     for k = 1:p.K
         push!(constraints, norm(dot(dx[:, k], dx[:, k]) + dot(du[:, k], du[:, k]), 2) <= Δ[k])
     end
     push!(constraints, norm(dσ, 2) <= Δσ)
-    push!(constraints, σ >= 0)
 
     prob = minimize(objective, constraints)
     solve!(prob, ECOS.Optimizer, silent_solver=true)
 
     p.xref = par.Px * evaluate(x)
     p.uref = par.Pu * evaluate(u)
-    p.σref = par.Pσ * evaluate(σ)
+    p.σref = par.Pσ * I(p.K - 1) * evaluate(σ)
     p.vc = reshape(evaluate(nu), (p.nx, p.K - 1))
     p.vb = evaluate(vb)
     p.Δ = evaluate(Δ)

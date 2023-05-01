@@ -14,7 +14,11 @@ function initialize!(p::ptr)
     for k = 2:p.K-1
         p.xref[idx_r, k] = par.x0[idx_r] + ((p.xref[idx_r, p.K] - par.x0[idx_r]) / (p.K - 1)) * (k - 1)
         p.xref[idx_v, k] = par.x0[idx_v] + ((p.xref[idx_v, p.K] - par.x0[idx_v]) / (p.K - 1)) * (k - 1)
-        p.uref[:, k] = [0.0; 0.0; 0.0]
+        p.uref[:, k] = [1.0; 1.0; 1.0] * 1
     end
-    p.σref = 2 * norm(par.x0 - par.xT) / (par.umax * p.K)
+    if (p.disc == :single)
+        p.σref = 2 * norm(par.x0 - par.xT) / (par.umax * p.K)
+    elseif(p.disc == :multiple)
+        p.σref = 2 * norm(par.x0 - par.xT) / (par.umax * p.K) * ones(p.K - 1)
+    end
 end
