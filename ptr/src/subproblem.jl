@@ -50,6 +50,7 @@ function solveSubproblem!(p::ptr)
     for k = 1:p.K
         push!(constraints, par.rho <= norm(p.xref[1:3, k] - par.rc) + dot(Xi(k), (par.Px[1:3, 1:3] * x[1:3, k] - p.xref[1:3, k])) + vb[k])
         push!(constraints, vb[k] >= 0)
+        push!(constraints, norm(x[4:6, k]) <= par.vmax / maximum(diag(par.Px[4:6, 4:6])))
     end
 
     # Control Constraints

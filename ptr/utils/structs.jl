@@ -23,26 +23,36 @@ struct IDX
 end
 struct PARAMS
     # Initial Condition
-    n::Float64              # Mean motion
-    x0::Array{Float64,1}
-    xT::Array{Float64,1}
-    umax::Float64           # Max delta-v
-    σmin::Float64           # Min time dilation per interval
-    σmax::Float64           # Max time dilation per interval
-    rc::Array{Float64,1}    # Keepout Zone Center
-    rho::Float64            # Keepout Zone Radius
-    Px::Diagonal{Float64,Vector{Float64}}    # State Scaling
-    Pu::Diagonal{Float64,Vector{Float64}}    # Control Scaling
-    Pσ::Float64    # Dilation Scaling
+    n::Float64                              # Mean motion
+    x0::Array{Float64,1}                    # Initial Condition
+    xT::Array{Float64,1}                    # Terminal Condition
+    umax::Float64                           # Max delta-v
+    vmax::Float64                           # Max Speed
+    σmin::Float64                           # Min time dilation per interval
+    σmax::Float64                           # Max time dilation per interval
+    rc::Array{Float64,1}                    # Keepout Zone Center
+    rho::Float64                            # Keepout Zone Radius
+    Px::Diagonal{Float64,Vector{Float64}}   # State Scaling
+    Pu::Diagonal{Float64,Vector{Float64}}   # Control Scaling
+    Pσ::Float64                             # Dilation Scaling
 
-    function PARAMS(n, x0, xT, umax, σmin, σmax, rc, rho, Px, Pu, Pσ)
-        @assert maximum(diag(Pu)) == minimum(diag(Pu))
-        new(n, x0, xT, umax, σmin, σmax, rc, rho, Px, Pu, Pσ)
+    function PARAMS(n, x0, xT, umax, vmax, σmin, σmax, rc, rho, Px, Pu, Pσ)
+        @assert minimum(diag(Pu)) > 0 "Check Pu: All scalings must be greater than zero"
+        @assert minimum(diag(Px)) > 0 "Check Px: All scalings must be greater than zero"
+        @assert maximum(diag(Pu)) == minimum(diag(Pu)) "Check Pu: All control inputs must have identical scaling"
+        @assert maximum(diag(Px)[4:6]) == minimum(diag(Px)[4:6]) "Check Px: All velocity components must have identical scaling"
+        @assert σmax > 0.0 && σmin > 0 "σmax and σmin must be greater than zero"
+        @assert σmax >= σmin "σmax must be greater or equal to σmin"
+        @assert umax > 0.0 "umax must be greater than zero"
+        @assert vmax > 0.0 "vmax must be greater than zero"
+        @assert rho > 0.0 "rho must be greater than zero"
+
+        new(n, x0, xT, umax, vmax, σmin, σmax, rc, rho, Px, Pu, Pσ)
     end
 end
 mutable struct ptr
 
-    # Problem paramters
+    # Problem parameters
     nx::Int64     # Number of states
     nu::Int64     # Number of controls
     K::Int64      # Number of PTR nodes
@@ -96,7 +106,6 @@ mutable struct ptr
 
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
-
         wD = 2
         wDσ = 1
         wvc = 1e2
