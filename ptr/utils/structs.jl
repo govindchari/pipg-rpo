@@ -60,8 +60,7 @@ mutable struct ptr
 
     # PTR Hyperparameters
     Nsub::Int64   # Number of integration subintervals for discretization
-    wD::Float64   # Weight on trust region
-    wDσ::Float64  # Weight on time trust region
+    wtr::Float64   # Weight on trust region
     wvc::Float64  # Virtual control weight
     wvb::Float64  # Virtual control weight
 
@@ -106,8 +105,7 @@ mutable struct ptr
 
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
-        wD = 2
-        wDσ = 1
+        wtr = 4
         wvc = 1e2
         wvb = 1
 
@@ -127,6 +125,6 @@ mutable struct ptr
             dτ = 1.0
         end
 
-        new(nx, nu, K, dτ, Nsub, wD, wDσ, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), zeros(K), σref, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation)
+        new(nx, nu, K, dτ, Nsub, wtr, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), zeros(K), σref, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation)
     end
 end
