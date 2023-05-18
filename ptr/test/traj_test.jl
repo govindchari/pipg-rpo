@@ -34,5 +34,7 @@ Pσ = 300.0
 par = PARAMS(n, x0, xT, umax, vmax, σmin, σmax, rc, rho, Px, Pu, Pσ)
 p = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
 solveTraj!(p)
+figure(dpi=150)
+plot(p.vc)
 
 plot_all(p)

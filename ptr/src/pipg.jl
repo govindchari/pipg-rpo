@@ -14,8 +14,8 @@ function vectorize(p::ptr)
     P = Diagonal(Pvec)
 
     # Construct q
-    q = [-2.0 * (par.Px \ p.xref)[:];-2.0 * (par.Pu \ p.uref)[:][1:end-nu];-2.0 * (p.σref ./ par.Pσ)[:];zeros(nx * (p.K - 1));p.wvc*ones(nx * (p.K - 1));p.wvb*ones(p.K)]
-    # q = [-2.0 * (par.Px \ p.xref)[:];-2.0 * (par.Pu \ p.uref)[:][1:end-nu];-2.0 * (p.σref ./ par.Pσ)[:];zeros(nx * (p.K - 1));p.wvc*ones(nx * (p.K - 1))]
+    q = [-2.0 * p.wtr * (par.Px \ p.xref)[:];-2.0 * p.wtr * (par.Pu \ p.uref)[:][1:end-nu];-2.0 * p.wtr * (p.σref ./ par.Pσ)[:];zeros(nx * (p.K - 1));p.wvc*ones(nx * (p.K - 1));p.wvb*ones(p.K)]
+    # q = [-2.0 * p.wtr * (par.Px \ p.xref)[:];-2.0 * p.wtr * (par.Pu \ p.uref)[:][1:end-nu];-2.0 * p.wtr * (p.σref ./ par.Pσ)[:];zeros(nx * (p.K - 1));p.wvc*ones(nx * (p.K - 1))]
 
 
     # Scaled Dynamics Matrices

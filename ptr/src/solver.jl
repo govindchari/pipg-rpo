@@ -13,7 +13,7 @@ function solveTraj!(p::ptr)
         discretize!(p)
         P, q, H, h = vectorize(p)
         # solveSubproblemVectorized!(p, P, q, H, h)
-        solveSubproblem!(p, H, h)
+        solveSubproblem!(p)
         log(k, p)
     end
     return z

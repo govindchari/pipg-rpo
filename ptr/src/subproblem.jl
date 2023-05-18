@@ -1,6 +1,6 @@
 using Convex, ECOS
 
-function solveSubproblem!(p::ptr, H, h)
+function solveSubproblem!(p::ptr)
 
     # Scaled optimization variables
     x = Variable(p.nx, p.K)
@@ -16,8 +16,8 @@ function solveSubproblem!(p::ptr, H, h)
     du = u - par.Pu \ p.uref
     dσ = σ - p.σref / par.Pσ
 
-    # Minimuim Control Effort
-    objective = sumsquares(u) + p.wtr * (sumsquares(dx) + sumsquares(du) + sumsquares(dσ)) + p.wvc * norm(nu, 1) + p.wvb * sumsquares(vb)
+    # Minimum Control Effort
+    objective = sumsquares(u) + p.wtr * (sumsquares(dx) + sumsquares(du) + sumsquares(dσ)) + p.wvc * norm(nu, 1) + p.wvb * sum(vb)
 
     # Minimum Fuel
     # objective = p.wtr * (sumsquares(dx) + sumsquares(du) + sumsquares(dσ)) + p.wvc * norm(nu, 1) + p.wvb * sumsquares(vb)
@@ -59,6 +59,7 @@ function solveSubproblem!(p::ptr, H, h)
 
     prob = minimize(objective, constraints)
     solve!(prob, ECOS.Optimizer, silent_solver=true)
+    println(prob.optval)
 
     p.xref .= par.Px * evaluate(x)
     p.uref .= par.Pu * evaluate(u)
@@ -75,12 +76,12 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
     K = p.K
 
     z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (2 * K - 1))
-    # z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (K - 1))
 
-    objective = (0.5 * quadform(z, P) + dot(z, q)) / 100
+    r = p.wtr * (sum((par.Px \ p.xref)[:].^2) + sum((par.Pu \ p.uref)[:].^2) + sum((par.Pσ \ p.σref).^2))
+    objective = (0.5 * quadform(z, P) + dot(z, q)) + r
     constraints = Constraint[H*z==h]
 
-    # L1 Norm Reformulation
+    # L1 Norm Reformulation for virtual control
     base = n_x * K + n_u * (K - 1) + (K - 1)
     shift = n_x * (K - 1)
     for k = 1:n_x*(p.K-1)
@@ -89,16 +90,16 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
     end
 
     # Boundary Conditions
-    push!(constraints, z[1:6] == par.Px \ par.x0)
+    push!(constraints, z[1:n_x] == par.Px \ par.x0)
     push!(constraints, z[p.K*nx-n_x+1:p.K*n_x] == par.Px \ par.xT)
 
     # State Constraints (Keepout Zone + Max Speed)
     Xi(k) = (p.xref[1:3, k] - par.rc) / norm((p.xref[1:3, k] - par.rc))
     shift = n_x * (3 * K - 2) + n_u * (K - 1) + (K - 1)
     for k = 1:p.K
-        push!(constraints, par.rho <= norm(p.xref[1:3, k] - par.rc) + dot(Xi(k), (par.Px[1:3, 1:3] * z[6*k+1:6*k+3] - p.xref[1:3, k])) + z[shift+k])
+        push!(constraints, par.rho <= norm(p.xref[1:3, k] - par.rc) + dot(Xi(k), (par.Px[1:3, 1:3] * z[6*(k-1)+1:6*(k-1)+3] - p.xref[1:3, k])) + z[shift+k])
         push!(constraints, z[shift+k] >= 0)
-        push!(constraints, norm(z[6*k+4:6*k+6]) <= par.vmax / maximum(diag(par.Px[4:6, 4:6])))
+        push!(constraints, norm(z[n_x*(k-1)+4:n_x*k]) <= par.vmax / maximum(diag(par.Px[4:6, 4:6])))
     end
 
     # Dilation Constraints
@@ -110,16 +111,16 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
     # Control Constraints
     shift = n_x * K
     for k = 1:p.K-1
-        push!(constraints, norm(z[shift+3*k+1:shift+3*(k+1)]) <= par.umax / maximum(diag(par.Pu)))
+        push!(constraints, norm(z[shift+3*(k-1)+1:shift+3*(k)]) <= par.umax / maximum(diag(par.Pu)))
     end
 
     prob = minimize(objective, constraints)
     solve!(prob, ECOS.Optimizer, silent_solver=true)
+    println(prob.optval)
 
-    # println(prob.optval)
     z = evaluate(z)
     x = z[1:6*K]
-    u = [z[6*K+1:6*K+3*(K-1)];0;0;0]
+    u = [z[6*K+1:6*K+3*(K-1)]; 0; 0; 0]
     σ = z[6*K+3*(K-1)+1:6*K+3*(K-1)+K-1]
     vc = z[6*K+3*(K-1)+K:6*K+3*(K-1)+K-1+6*(K-1)]
     G = z[3*(K-1)+(K-1)+6*(2*K-1)+1:3*(K-1)+(K-1)+6*(3*K-2)]
