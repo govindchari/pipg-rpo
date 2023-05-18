@@ -10,12 +10,12 @@ function vectorize(p::ptr)
 
     # Construct P
     Pvec = [2.0 * p.wtr * ones(nx * p.K); 2.0 * (1 + p.wtr) * ones(nu * (p.K - 1)); 2.0 * p.wtr * ones(p.K - 1); zeros(nx * (p.K - 1)); zeros(nx * (p.K - 1)); zeros(p.K)]
-    Pvec = [2.0 * p.wtr * ones(nx * p.K); 2.0 * (1 + p.wtr) * ones(nu * (p.K - 1)); 2.0 * p.wtr * ones(p.K - 1);zeros(nx * (p.K - 1)); zeros(nx * (p.K - 1))]
+    # Pvec = [2.0 * p.wtr * ones(nx * p.K); 2.0 * (1 + p.wtr) * ones(nu * (p.K - 1)); 2.0 * p.wtr * ones(p.K - 1);zeros(nx * (p.K - 1)); zeros(nx * (p.K - 1))]
     P = Diagonal(Pvec)
 
     # Construct q
-    q = [-2.0 * (par.Px \ p.xref)[:];-2.0 * (par.Pu \ p.uref)[:][1:end-nu];-2.0 * (p.σref ./ par.Pσ)[:];zeros(nx * (p.K - 1));ones(nx * (p.K - 1));ones(p.K)]
-    q = [-2.0 * (par.Px \ p.xref)[:];-2.0 * (par.Pu \ p.uref)[:][1:end-nu];-2.0 * (p.σref ./ par.Pσ)[:];zeros(nx * (p.K - 1));ones(nx * (p.K - 1))]
+    q = [-2.0 * (par.Px \ p.xref)[:];-2.0 * (par.Pu \ p.uref)[:][1:end-nu];-2.0 * (p.σref ./ par.Pσ)[:];zeros(nx * (p.K - 1));p.wvc*ones(nx * (p.K - 1));p.wvb*ones(p.K)]
+    # q = [-2.0 * (par.Px \ p.xref)[:];-2.0 * (par.Pu \ p.uref)[:][1:end-nu];-2.0 * (p.σref ./ par.Pσ)[:];zeros(nx * (p.K - 1));p.wvc*ones(nx * (p.K - 1))]
 
 
     # Scaled Dynamics Matrices
@@ -39,7 +39,7 @@ function vectorize(p::ptr)
     HG = sparse(zeros(nc, nc))
     Hvb = sparse(zeros(nc, p.K))
     H = sparse([Hx Hu Hs Hvc HG Hvb])
-    H = sparse([Hx Hu Hs Hvc HG])
+    # H = sparse([Hx Hu Hs Hvc HG])
 
     # Construct h
     h = -(par.Px \ p.z)[:]

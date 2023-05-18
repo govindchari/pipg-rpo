@@ -8,14 +8,13 @@ function solveTraj!(p::ptr)
     initialize!(p)
     println("iter       tf        |νc|       |νb|        |Δ|       |Δσ|    ")
     println("--------------------------------------------------------------")
+    z = zeros(6 * (3 * p.K - 2) + 3 * (p.K - 1) + (p.K - 1))
     for k = 1:20
         discretize!(p)
         P, q, H, h = vectorize(p)
-        z = solveSubproblemVectorized!(p, P, q, H, h)
-        x, u, s = solveSubproblem!(p, H, h)
-        # println(norm(z - [x;u[1:end-3];s]))
-        # println(norm(H*[(par.Px \ p.xref)[:];(par.Pu \ p.uref)[:][1:end-3];((par.Pσ * I(p.K - 1))) \ p.σref[:]] - h))
-        # println(norm(u[end-2:end]))
+        # solveSubproblemVectorized!(p, P, q, H, h)
+        solveSubproblem!(p, H, h)
         log(k, p)
     end
+    return z
 end

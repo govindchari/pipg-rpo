@@ -18,7 +18,6 @@ function solveSubproblem!(p::ptr, H, h)
 
     # Minimuim Control Effort
     objective = sumsquares(u) + p.wtr * (sumsquares(dx) + sumsquares(du) + sumsquares(dσ)) + p.wvc * norm(nu, 1) + p.wvb * sumsquares(vb)
-    # objective = sumsquares(u) + p.wtr * (sumsquares(dx) + sumsquares(du) + sumsquares(dσ))
 
     # Minimum Fuel
     # objective = p.wtr * (sumsquares(dx) + sumsquares(du) + sumsquares(dσ)) + p.wvc * norm(nu, 1) + p.wvb * sumsquares(vb)
@@ -34,9 +33,6 @@ function solveSubproblem!(p::ptr, H, h)
     constraints = Constraint[
         x[:, k+1] == A(k) * x[:, k] + B(k) * u[:, k] + S(k) * σ[k] + z(k) + nu[(k-1)*p.nx+1:k*p.nx] for k in 1:p.K-1
     ]
-    # constraints = Constraint[
-    #     x[:, k+1] == A(k) * x[:, k] + B(k) * u[:, k] + S(k) * σ[k] + z(k) for k in 1:p.K-1
-    # ]
 
     # Boundary Conditions
     # x = [r v]
@@ -64,20 +60,13 @@ function solveSubproblem!(p::ptr, H, h)
     prob = minimize(objective, constraints)
     solve!(prob, ECOS.Optimizer, silent_solver=true)
 
-    xrs = par.Px \ p.xref
-    urs = par.Pu \ p.uref
-    σrs = p.σref ./ par.Pσ
-
-    # println(prob.optval - p.wtr * (sum(xrs.^2) + sum(urs.^2) + sum(σrs.^2)))
-
     p.xref .= par.Px * evaluate(x)
     p.uref .= par.Pu * evaluate(u)
     p.σref .= par.Pσ * I(p.K - 1) * evaluate(σ)
     p.vc .= reshape(evaluate(nu), (p.nx, p.K - 1))
-    # p.vb .= evaluate(vb)
+    p.vb .= evaluate(vb)
     p.Δ = sqrt(norm(evaluate(dx)[:])^2 + norm(evaluate(du)[:])^2)
     p.Δσ = norm(evaluate(dσ))
-    return evaluate(x)[:], evaluate(u)[:], evaluate(σ)[:]
 end
 
 function solveSubproblemVectorized!(p::ptr, P, q, H, h)
@@ -85,13 +74,13 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
     n_u = 3
     K = p.K
 
-    # z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (2 * K - 1))
-    # z = Variable(n_x * (K) + n_u * (K - 1) + (K - 1))
-    z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (K - 1))
+    z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (2 * K - 1))
+    # z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (K - 1))
 
-    objective = (0.5 * quadform(z, P) + dot(z, q))
+    objective = (0.5 * quadform(z, P) + dot(z, q)) / 100
     constraints = Constraint[H*z==h]
 
+    # L1 Norm Reformulation
     base = n_x * K + n_u * (K - 1) + (K - 1)
     shift = n_x * (K - 1)
     for k = 1:n_x*(p.K-1)
@@ -99,13 +88,48 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
         push!(constraints, z[base+k] <= z[base+shift+k])
     end
 
+    # Boundary Conditions
     push!(constraints, z[1:6] == par.Px \ par.x0)
     push!(constraints, z[p.K*nx-n_x+1:p.K*n_x] == par.Px \ par.xT)
+
+    # State Constraints (Keepout Zone + Max Speed)
+    Xi(k) = (p.xref[1:3, k] - par.rc) / norm((p.xref[1:3, k] - par.rc))
+    shift = n_x * (3 * K - 2) + n_u * (K - 1) + (K - 1)
+    for k = 1:p.K
+        push!(constraints, par.rho <= norm(p.xref[1:3, k] - par.rc) + dot(Xi(k), (par.Px[1:3, 1:3] * z[6*k+1:6*k+3] - p.xref[1:3, k])) + z[shift+k])
+        push!(constraints, z[shift+k] >= 0)
+        push!(constraints, norm(z[6*k+4:6*k+6]) <= par.vmax / maximum(diag(par.Px[4:6, 4:6])))
+    end
+
+    # Dilation Constraints
+    shift = n_x * K + n_u * (K - 1)
+    for k = 1:p.K-1
+        push!(constraints, z[shift+k] >= par.σmin / par.Pσ, z[shift+k] <= par.σmax / par.Pσ)
+    end
+
+    # Control Constraints
+    shift = n_x * K
+    for k = 1:p.K-1
+        push!(constraints, norm(z[shift+3*k+1:shift+3*(k+1)]) <= par.umax / maximum(diag(par.Pu)))
+    end
 
     prob = minimize(objective, constraints)
     solve!(prob, ECOS.Optimizer, silent_solver=true)
 
-    println(prob.optval)
+    # println(prob.optval)
+    z = evaluate(z)
+    x = z[1:6*K]
+    u = [z[6*K+1:6*K+3*(K-1)];0;0;0]
+    σ = z[6*K+3*(K-1)+1:6*K+3*(K-1)+K-1]
+    vc = z[6*K+3*(K-1)+K:6*K+3*(K-1)+K-1+6*(K-1)]
+    G = z[3*(K-1)+(K-1)+6*(2*K-1)+1:3*(K-1)+(K-1)+6*(3*K-2)]
+    vb = z[3*(K-1)+(K-1)+6*(3*K-2)+1:end]
 
-    return evaluate(z)
+    p.xref .= par.Px * reshape(x, (6, K))
+    p.uref .= par.Pu * reshape(u, (3, K))
+    p.σref .= par.Pσ * I(p.K - 1) * σ
+    p.vc .= reshape(vc, (p.nx, (p.K - 1)))
+    p.vb .= vb
+    # p.Δ = sqrt(norm(evaluate(dx)[:])^2 + norm(evaluate(du)[:])^2)
+    # p.Δσ = norm(evaluate(dσ))
 end
