@@ -77,11 +77,13 @@ mutable struct ptr
     # Integrated Trajectory
     xint::Array{Float64,2}
 
-    # Virtual Control and Trust Region Size
+    # Virtual Control and Virtual Buffer
     vc::Array{Float64,2}
     vb::Array{Float64,1}
-    Δ::Array{Float64,1}
-    Δσ
+
+    # Trust region Radius
+    Δ::Float64
+    Δσ::Float64
 
     # Discrete Dynamics
     idx::IDX
@@ -105,9 +107,9 @@ mutable struct ptr
 
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
-        wtr = 4
+        wtr = 1e1
         wvc = 1e2
-        wvb = 1
+        wvb = 1e1
 
         if (disc != :foh && disc != :impulsive)
             throw(ArgumentError("disc must be :foh or :impulsive"))
@@ -125,6 +127,6 @@ mutable struct ptr
             dτ = 1.0
         end
 
-        new(nx, nu, K, dτ, Nsub, wtr, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K), zeros(K), zeros(K), σref, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation)
+        new(nx, nu, K, dτ, Nsub, wtr, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K - 1), zeros(K), 0.0, 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation)
     end
 end

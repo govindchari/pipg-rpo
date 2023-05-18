@@ -16,14 +16,14 @@ function discretize!(p::ptr)
         z = RK4(df, P0, (k - 1) * p.dτ, p.dτ, p.Nsub, p)
 
         # Package discrete time matrices
-        p.xprop[:, k] = z[idx.x]
+        p.xprop[:, k] .= z[idx.x]
         p.def[k] = norm(z[idx.x] - p.xref[:, k+1])
         Ak = reshape(z[idx.phi], (p.nx, p.nx))
-        p.A[:, :, k] = Ak
-        p.Bm[:, :, k] = Ak * reshape(z[idx.Bm], (p.nx, p.nu))
-        p.Bp[:, :, k] = Ak * reshape(z[idx.Bp], (p.nx, p.nu))
-        p.S[:, k] = Ak * z[idx.S]
-        p.z[:, k] = Ak * z[idx.z]
+        p.A[:, :, k] .= Ak
+        p.Bm[:, :, k] .= Ak * reshape(z[idx.Bm], (p.nx, p.nu))
+        p.Bp[:, :, k] .= Ak * reshape(z[idx.Bp], (p.nx, p.nu))
+        p.S[:, k] .= Ak * z[idx.S]
+        p.z[:, k] .= Ak * z[idx.z]
     end
 end
 function df(τ::Float64, P::Array{Float64,1}, p::ptr)
