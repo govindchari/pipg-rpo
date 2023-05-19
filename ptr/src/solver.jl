@@ -8,13 +8,18 @@ function solveTraj!(p::ptr)
     initialize!(p)
     println("iter       tf        |νc|       |νb|        |Δ|       |Δσ|    ")
     println("--------------------------------------------------------------")
-    z = zeros(6 * (3 * p.K - 2) + 3 * (p.K - 1) + (p.K - 1))
-    for k = 1:20
+    opts = PIPG_OPTS()
+    tecos_l = []
+    tpipg_l = []
+    for k = 1:15
         discretize!(p)
         P, q, H, h = vectorize(p)
-        # solveSubproblemVectorized!(p, P, q, H, h)
-        solveSubproblem!(p)
+        zopt, tecos = solveSubproblemVectorized!(p, P, q, H, h)
+        tpipg = @elapsed xi = pipg_vec_solve!(p, opts, P, q, H, h, zopt)
+        package_solution(p, xi)
+        append!(tecos_l, tecos)
+        append!(tpipg_l, tpipg)
         log(k, p)
     end
-    return z
+    return tecos_l, tpipg_l
 end

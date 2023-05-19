@@ -107,9 +107,13 @@ mutable struct ptr
 
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
-        wtr = 1e1
-        wvc = 1e2
-        wvb = 1e1
+        # wtr = 1
+        # wvc = 1e2
+        # wvb = 1
+        wtr = 1.0
+        wvc = 20.0
+        wvb = 1.0
+
 
         if (disc != :foh && disc != :impulsive)
             throw(ArgumentError("disc must be :foh or :impulsive"))

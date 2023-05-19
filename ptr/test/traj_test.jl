@@ -1,4 +1,4 @@
-using LinearAlgebra
+using LinearAlgebra, BenchmarkTools
 
 include("../utils/structs.jl")
 include("../utils/discretize.jl")
@@ -27,20 +27,13 @@ Pu = umax * I(3)
 Px = Diagonal([200.0; 1000.0; 200.0; vmax; vmax; vmax])
 Pσ = 300.0
 
-x = [1.0;-1.0;2.0]
-l = 0.0
-u = 1.0
-proj_box!(x, l, u)
-println(x)
+par = PARAMS(n, x0, xT, umax, vmax, σmin, σmax, rc, rho, Px, Pu, Pσ)
+p = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
+ecos, pipg = solveTraj!(p)
 
-# Pu = 1.0*I(3)
-# Px = 1.0*I(6)
-# Pσ = 1.0
+println("ECOS Time: ", sum(ecos))
+println("PIPG Time: ", sum(pipg))
 
-# par = PARAMS(n, x0, xT, umax, vmax, σmin, σmax, rc, rho, Px, Pu, Pσ)
-# p = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
-# solveTraj!(p)
-# figure(dpi=150)
-# plot(p.vc)
-
-# plot_all(p)
+figure(dpi=150)
+plot(p.vc)
+plot_all(p)
