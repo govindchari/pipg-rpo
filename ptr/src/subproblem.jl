@@ -123,14 +123,14 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
     u = [z[6*K+1:6*K+3*(K-1)]; 0; 0; 0]
     σ = z[6*K+3*(K-1)+1:6*K+3*(K-1)+K-1]
     vc = z[6*K+3*(K-1)+K:6*K+3*(K-1)+K-1+6*(K-1)]
-    G = z[3*(K-1)+(K-1)+6*(2*K-1)+1:3*(K-1)+(K-1)+6*(3*K-2)]
+    # G = z[3*(K-1)+(K-1)+6*(2*K-1)+1:3*(K-1)+(K-1)+6*(3*K-2)]
     vb = z[3*(K-1)+(K-1)+6*(3*K-2)+1:end]
 
+    p.Δ = sqrt(norm((x - (par.Px \ p.xref)[:]))^2 + norm((u - (par.Pu \ p.uref)[:]))^2)
+    p.Δσ = norm(σ - p.σref / par.Pσ)
     p.xref .= par.Px * reshape(x, (6, K))
     p.uref .= par.Pu * reshape(u, (3, K))
     p.σref .= par.Pσ * I(p.K - 1) * σ
     p.vc .= reshape(vc, (p.nx, (p.K - 1)))
     p.vb .= vb
-    # p.Δ = sqrt(norm(evaluate(dx)[:])^2 + norm(evaluate(du)[:])^2)
-    # p.Δσ = norm(evaluate(dσ))
 end

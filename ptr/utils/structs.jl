@@ -108,7 +108,7 @@ mutable struct ptr
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
         wtr = 1e1
-        wvc = 5e2
+        wvc = 1e2
         wvb = 1e1
 
         if (disc != :foh && disc != :impulsive)
