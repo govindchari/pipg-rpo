@@ -59,7 +59,6 @@ function solveSubproblem!(p::ptr)
 
     prob = minimize(objective, constraints)
     solve!(prob, ECOS.Optimizer, silent_solver=true)
-    println(prob.optval)
 
     p.xref .= par.Px * evaluate(x)
     p.uref .= par.Pu * evaluate(u)
@@ -75,8 +74,8 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
     n_u = 3
     K = p.K
 
-    # z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (2 * K - 1))
-    z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (K - 1))
+    z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (2 * K - 1))
+    # z = Variable(n_x * (3 * K - 2) + n_u * (K - 1) + (K - 1))
 
     r = p.wtr * (sum((par.Px\p.xref)[:] .^ 2) + sum((par.Pu\p.uref)[:] .^ 2) + sum((par.Pσ \ p.σref) .^ 2))
     objective = (0.5 * quadform(z, P) + dot(z, q)) + r
@@ -95,11 +94,11 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
     push!(constraints, z[p.K*nx-n_x+1:p.K*n_x] == par.Px \ par.xT)
 
     # State Constraints (Keepout Zone + Max Speed)
-    # Xi(k) = (p.xref[1:3, k] - par.rc) / norm((p.xref[1:3, k] - par.rc))
+    Xi(k) = (p.xref[1:3, k] - par.rc) / norm((p.xref[1:3, k] - par.rc))
     shift = n_x * (3 * K - 2) + n_u * (K - 1) + (K - 1)
     for k = 1:p.K
-        # push!(constraints, par.rho <= norm(p.xref[1:3, k] - par.rc) + dot(Xi(k), (par.Px[1:3, 1:3] * z[6*(k-1)+1:6*(k-1)+3] - p.xref[1:3, k])) + z[shift+k])
-        # push!(constraints, z[shift+k] >= 0)
+        push!(constraints, par.rho <= norm(p.xref[1:3, k] - par.rc) + dot(Xi(k), (par.Px[1:3, 1:3] * z[6*(k-1)+1:6*(k-1)+3] - p.xref[1:3, k])) + z[shift+k])
+        push!(constraints, z[shift+k] >= 0)
         push!(constraints, norm(z[n_x*(k-1)+4:n_x*k]) <= par.vmax / maximum(diag(par.Px[4:6, 4:6])))
     end
 
@@ -117,23 +116,7 @@ function solveSubproblemVectorized!(p::ptr, P, q, H, h)
 
     prob = minimize(objective, constraints)
 
-    t = @elapsed solve!(prob, Convex.MOI.OptimizerWithAttributes(ECOS.Optimizer, "verbose" => 0, "eps_abs" => 1e-4, "eps_rel" => 1e-4))
-    # println(prob.optval)
+    t = @elapsed solve!(prob, ECOS.Optimizer, silent_solver=true)
 
-    z = evaluate(z)
-    x = z[1:6*K]
-    u = [z[6*K+1:6*K+3*(K-1)]; 0; 0; 0]
-    σ = z[6*K+3*(K-1)+1:6*K+3*(K-1)+K-1]
-    vc = z[6*K+3*(K-1)+K:6*K+3*(K-1)+K-1+6*(K-1)]
-    # G = z[3*(K-1)+(K-1)+6*(2*K-1)+1:3*(K-1)+(K-1)+6*(3*K-2)]
-    vb = z[3*(K-1)+(K-1)+6*(3*K-2)+1:end]
-
-    # p.Δ = sqrt(norm((x - (par.Px\p.xref)[:]))^2 + norm((u - (par.Pu\p.uref)[:]))^2)
-    # p.Δσ = norm(σ - p.σref / par.Pσ)
-    # p.xref .= par.Px * reshape(x, (6, K))
-    # p.uref .= par.Pu * reshape(u, (3, K))
-    # p.σref .= par.Pσ * I(p.K - 1) * σ
-    # p.vc .= reshape(vc, (p.nx, (p.K - 1)))
-    # p.vb .= vb
-    return z,t
+    return evaluate(z), t
 end

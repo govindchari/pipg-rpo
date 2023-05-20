@@ -8,7 +8,7 @@ struct PIPG_OPTS
     function PIPG_OPTS()
         omega = 200.0
         rho = 1.8
-        max_iters = 500
+        max_iters = 1200
         check_iter = 1
         new(omega, rho, max_iters, check_iter)
     end
@@ -20,13 +20,11 @@ function vectorize(p::ptr)
     nc = nx * (p.K - 1)   # Number of equality constraints in vectorized problem
 
     # Construct P
-    # Pvec = [2.0 * p.wtr * ones(nx * p.K); 2.0 * (1 + p.wtr) * ones(nu * (p.K - 1)); 2.0 * p.wtr * ones(p.K - 1); zeros(nx * (p.K - 1)); zeros(nx * (p.K - 1)); zeros(p.K)]
-    Pvec = [2.0 * p.wtr * ones(nx * p.K); 2.0 * (1 + p.wtr) * ones(nu * (p.K - 1)); 2.0 * p.wtr * ones(p.K - 1); zeros(nx * (p.K - 1)); zeros(nx * (p.K - 1))]
+    Pvec = [2.0 * p.wtr * ones(nx * p.K); 2.0 * (1 + p.wtr) * ones(nu * (p.K - 1)); 2.0 * p.wtr * ones(p.K - 1); zeros(nx * (p.K - 1)); zeros(nx * (p.K - 1)); zeros(p.K)]
     P = Diagonal(Pvec)
 
     # Construct q
-    # q = [-2.0 * p.wtr * (par.Px\p.xref)[:]; -2.0 * p.wtr * (par.Pu\p.uref)[:][1:end-nu]; -2.0 * p.wtr * (p.σref./par.Pσ)[:]; zeros(nx * (p.K - 1)); p.wvc * ones(nx * (p.K - 1)); p.wvb * ones(p.K)]
-    q = [-2.0 * p.wtr * (par.Px\p.xref)[:]; -2.0 * p.wtr * (par.Pu\p.uref)[:][1:end-nu]; -2.0 * p.wtr * (p.σref./par.Pσ)[:]; zeros(nx * (p.K - 1)); p.wvc * ones(nx * (p.K - 1))]
+    q = [-2.0 * p.wtr * (par.Px\p.xref)[:]; -2.0 * p.wtr * (par.Pu\p.uref)[:][1:end-nu]; -2.0 * p.wtr * (p.σref./par.Pσ)[:]; zeros(nx * (p.K - 1)); p.wvc * ones(nx * (p.K - 1)); p.wvb * ones(p.K)]
 
     # Scaled Dynamics Matrices
     A(k) = sparse(par.Px \ p.A[:, :, k] * par.Px)
@@ -48,8 +46,7 @@ function vectorize(p::ptr)
     Hvc = 1.0 * I(nc)
     HG = sparse(zeros(nc, nc))
     Hvb = sparse(zeros(nc, p.K))
-    # H = sparse([Hx Hu Hs Hvc HG Hvb])
-    H = sparse([Hx Hu Hs Hvc HG])
+    H = sparse([Hx Hu Hs Hvc HG Hvb])
 
     # Construct h
     h = -(par.Px\p.z)[:]
@@ -69,7 +66,7 @@ function proj_inter_halfspaces!(c, u1::Vector{Float64}, u2::Vector{Float64}, eta
     a1 = dot(c, u1)
     a2 = dot(c, u2)
     b = dot(u1, u2)
-    if (min(abs(norm(u1) - 1), abs(norm(u2) - 1)) >= eps)
+    if (max(abs(norm(u1) - 1), abs(norm(u2) - 1)) >= eps)
         error("u1 and u2 must be unit vectors")
     end
     if abs(b - 1) <= eps
@@ -113,14 +110,24 @@ function proj_inter_halfspaces!(c, u1::Vector{Float64}, u2::Vector{Float64}, eta
 end
 function project_D!(p::ptr, z::Vector{Float64})
     for k = 1:p.K
-    #     idx_r = p.nx*(k-1)+1:p.nx*(k-1)+3
+        idx_r = p.nx * (k - 1) + 1
         idx_v = p.nx*(k-1)+4:p.nx*k
         idx_u = (p.nx*K)+p.nu*(k-1)+1:(p.nx*K)+p.nu*k
-    #     # idx_σ = n_x * K + n_u * (K - 1) + k
-    #     idx_vc = (p.nx*K)+p.nu*(k-1)+1:(p.nx*K)+p.nu*k
-    #     idx_vb = p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (p.K - 1) + k
+        idx_vb = p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (p.K - 1) + k
 
+        # Keepout Zone
+        Xi(k) = (p.xref[1:3, k] - par.rc) / norm((p.xref[1:3, k] - par.rc))
+        u1 = [-p.par.Px[1:3, 1:3] * Xi(k); -1.0]
+        eta1 = norm(p.xref[1:3, k] - par.rc) - p.par.rho - dot(Xi(k), p.xref[1:3, k])
+        nrm = norm(u1)
+        u1 /= nrm
+        eta1 /= nrm
+        proj_inter_halfspaces!((@view z[[idx_r, idx_r + 1, idx_r + 2, idx_vb]]), u1, [0.0; 0.0; 0.0; -1.0], eta1, 0.0)
+
+        # Max Speed
         proj_ball!((@view z[idx_v]), par.vmax / maximum(diag(par.Px[4:6, 4:6])))
+
+        # Max Control
         proj_ball!((@view z[idx_u]), par.umax / maximum(diag(par.Pu)))
     end
 
@@ -162,9 +169,9 @@ function package_solution(p::ptr, xi::Vector{Float64})
     p.uref .= par.Pu * reshape(u, (3, K))
     p.σref .= par.Pσ * I(p.K - 1) * σ
     p.vc .= reshape(vc, (p.nx, (p.K - 1)))
-    # p.vb .= vb
+    p.vb .= vb
 end
-function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, P, q, H, h, zopt)
+function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, P, q, H, h)
     stop = false
     k = 1
 
@@ -191,11 +198,10 @@ function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, P, q, H, h, zopt)
         if mod(k, opts.check_iter) == 0
             # r = p.wtr * (sum((par.Px \ p.xref)[:].^2) + sum((par.Pu \ p.uref)[:].^2) + sum((par.Pσ \ p.σref).^2))
             # @printf("%3d   %10.3e  %9.2e\n",
-                # k, norm(0.5 * dot(xi, P * xi) + dot(q, xi) + r), norm(H * xi - h))
-            stop = k >= opts.max_iters || (norm(xi - zopt) / norm(zopt) <= 0.01)
+            # k, norm(0.5 * dot(xi, P * xi) + dot(q, xi) + r), norm(H * xi - h))
+            stop = k >= opts.max_iters
         end
         k += 1
     end
-    println(k)
-    return xi
+    return xi, k - 1
 end

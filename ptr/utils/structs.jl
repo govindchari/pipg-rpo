@@ -111,7 +111,7 @@ mutable struct ptr
         # wvc = 1e2
         # wvb = 1
         wtr = 1.0
-        wvc = 20.0
+        wvc = 15.0
         wvb = 1.0
 
 

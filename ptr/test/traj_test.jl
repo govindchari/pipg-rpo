@@ -28,12 +28,15 @@ Px = Diagonal([200.0; 1000.0; 200.0; vmax; vmax; vmax])
 Pσ = 300.0
 
 par = PARAMS(n, x0, xT, umax, vmax, σmin, σmax, rc, rho, Px, Pu, Pσ)
-p = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
-ecos, pipg = solveTraj!(p)
+pecos = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
+time_ecos, zecos = solveTraj!(pecos, :ecos)
 
-println("ECOS Time: ", sum(ecos))
-println("PIPG Time: ", sum(pipg))
+ppipg = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
+time_pipg, zpipg = solveTraj!(ppipg, :pipg)
 
-figure(dpi=150)
-plot(p.vc)
-plot_all(p)
+println("ECOS Time: ", sum(time_ecos))
+println("PIPG Time: ", sum(time_pipg))
+
+# plot_all(pecos)
+
+println(norm(zecos-zpipg)/norm(zecos))
