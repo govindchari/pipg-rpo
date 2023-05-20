@@ -11,11 +11,11 @@ function [X, U, solve_time, parse_time, solve_status] = ecos_trajopt(p)
         objective = objective + u{k}'*R*u{k};
         objective = objective + x{k}'*Q*x{k};
         constraints = [constraints, x{k+1} == Ad*x{k} + Bd*u{k}];
-        constraints = [constraints, norm(x{k}(4:6)) <= vmax];
+%         constraints = [constraints, norm(x{k}(4:6)) <= vmax];
         constraints = [constraints, norm(u{k},2) <= umax];
-        constraints = [constraints, norm(S*x{k}) <= p.leading * c*x{k}];
+%         constraints = [constraints, norm(S*x{k}) <= p.leading * c*x{k}];
     end
-    options = sdpsettings('solver', 'ecos', 'verbose', 0, 'debug', 0);
+    options = sdpsettings('solver', 'gurobi', 'verbose', 0, 'debug', 0);
     sol = optimize(constraints, objective, options);
 
     %%%%%%%%%%%%%%%%%%%%%%%%
@@ -34,22 +34,22 @@ function [X, U, solve_time, parse_time, solve_status] = ecos_trajopt(p)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %%% Extract solve status %%%
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-    switch sol.problem
-    case 0
-       solve_status = 'OPTIMAL';
-    case {1,12,15}
-       % 1 Infeasible problem
-       % 12 Infeasible or unbounded
-       % 15 Problem either infeasible or unbounded
-       solve_status  = 'INFEASIBLE';
-    case 3
-       solve_status = 'MAX ITERS REACHED';
-    case 4
-       solve_status = 'NUMERICAL PROBLEMS';
-    otherwise
-        display(sol.problem);
-        error('Unsupported exit flag.');
-    end
+% 
+%     switch sol.problem
+%     case 0
+%        solve_status = 'OPTIMAL';
+%     case {1,12,15}
+%        % 1 Infeasible problem
+%        % 12 Infeasible or unbounded
+%        % 15 Problem either infeasible or unbounded
+%        solve_status  = 'INFEASIBLE';
+%     case 3
+%        solve_status = 'MAX ITERS REACHED';
+%     case 4
+%        solve_status = 'NUMERICAL PROBLEMS';
+%     otherwise
+%         display(sol.problem);
+%         error('Unsupported exit flag.');
+%     end
 
 end

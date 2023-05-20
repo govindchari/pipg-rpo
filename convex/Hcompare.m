@@ -21,11 +21,11 @@ n = sqrt(mu/a^3); % Mean motion (s^-1)
 
 [A, B] = dynamics(n, dt);
 
-nx = 1;
-nu = 1;
-A = [2];
-B = [3];
-N = 3;
+% nx = 1;
+% nu = 1;
+% A = [2];
+% B = [3];
+% N = 3;
 
 Hx = [kron(speye(N - 1),A) zeros(nx*(N - 1),nx)] ...
     - [zeros(nx*(N - 1),nx) speye(nx*(N - 1))];
@@ -42,11 +42,19 @@ H2 = [Hleft,H2];
 
 figure
 spy(H1)
+title("Sparsity Pattern of H", "Interpreter","latex", FontSize=32)
+set(gca,'XTick',[], 'YTick', [])
 
+% figure
+% spy(H2)
+
+[Q,R] = qr(H1',"econ");
 figure
-spy(H2)
+spy(Q')
+title("Sparsity Pattern of $Q^\top$", "Interpreter","latex", FontSize=32)
+set(gca,'XTick',[], 'YTick', [])
 
-full(H1)
-full(H2)
 
-norm(eig(H1'*H1)-eig(H2'*H2))
+
+
+% norm(eig(H1'*H1)-eig(H2'*H2))

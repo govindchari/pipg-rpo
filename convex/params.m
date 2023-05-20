@@ -16,7 +16,7 @@ function p = params()
     
     dt = 50;    % Discretization time [s]
     p.dt = dt;
-    T = 1000;   % Time horizon [s]
+    T = 1250;   % Time horizon [s]
     p.T = T; 
     N = T/dt + 1;    % Number of discretization nodes
     p.N = N;
@@ -35,7 +35,7 @@ function p = params()
     %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     % x = [r v]'
-    x0 = [100 1000 100 0 0 0]';
+    x0 = [200 1000 0 0 0 0]';
     xN = [0 0 0 0 0 0]';
     p.x0 = x0;
     p.xN = xN;
@@ -68,11 +68,10 @@ function p = params()
     %%%%%%%%%%%%%%%%%%%%%%%%
     %%% Scaling Matrices %%%
     %%%%%%%%%%%%%%%%%%%%%%%%
-%     Px = diag([140, 1000, 1, 1.6, 1.6, 1.6]);
-    Px = diag([140, 140, 140, 1.6, 1.6, 1.6]);
-    Pu = p.umax*eye(nu); % Must be some multiple of the identity
-%     Px = eye(nx);
-%     Pu = eye(nu);
+%     Px = diag([140, 140, 140, 1.6, 1.6, 1.6]);
+%     Pu = p.umax*eye(nu); % Must be some multiple of the identity
+    Px = eye(nx);
+    Pu = eye(nu);
 
     % Need these constraints on scaling to impose ball constraints
     assert(Px(1,1) == Px(2,2) && Px(2,2) == Px(3,3))
