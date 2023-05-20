@@ -6,9 +6,9 @@ struct PIPG_OPTS
     max_iters::Int64
     check_iter::Int64
     function PIPG_OPTS()
-        omega = 200.0
-        rho = 1.8
-        max_iters = 1200
+        omega = 300.0
+        rho = 1.65
+        max_iters = 400
         check_iter = 1
         new(omega, rho, max_iters, check_iter)
     end

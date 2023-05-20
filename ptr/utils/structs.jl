@@ -104,16 +104,14 @@ mutable struct ptr
     # Dilation Type
     dilation::Symbol         # Either :single or :multiple
 
-
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
         # wtr = 1
         # wvc = 1e2
         # wvb = 1
-        wtr = 1.0
+        wtr = 0.2
         wvc = 15.0
-        wvb = 1.0
-
+        wvb = 0.1
 
         if (disc != :foh && disc != :impulsive)
             throw(ArgumentError("disc must be :foh or :impulsive"))
