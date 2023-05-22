@@ -19,10 +19,10 @@ function solveTraj!(p::ptr, slvr::Symbol, verbose::Bool)
         P, q, H, h = vectorize(p)
         if slvr == :ecos
             z, t = solveSubproblemVectorized!(p, P, q, H, h)
-            package_solution(p, z)
+            package_solution(p, z, zeros(p.nx * (p.K - 1)))
         elseif slvr == :pipg
-            t = @elapsed z, pipg_iter = pipg_vec_solve!(p, opts, P, q, H, h)
-            package_solution(p, z)
+            t = @elapsed z, w, pipg_iter = pipg_vec_solve!(p, opts, P, q, H, h)
+            package_solution(p, z, w)
         end
         append!(time, t)
         if verbose

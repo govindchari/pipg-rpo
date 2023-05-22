@@ -104,6 +104,11 @@ mutable struct ptr
     # Dilation Type
     dilation::Symbol         # Either :single or :multiple
 
+    # Warmstart solution
+    zws::Vector{Float64}
+    wws::Vector{Float64}
+    ws::Bool
+
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
         # wtr = 1
@@ -129,6 +134,6 @@ mutable struct ptr
             dτ = 1.0
         end
 
-        new(nx, nu, K, dτ, Nsub, wtr, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K - 1), zeros(K), 0.0, 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation)
+        new(nx, nu, K, dτ, Nsub, wtr, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K - 1), zeros(K), 0.0, 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation, zeros(nx * (3 * K - 2) + nu * (K - 1) + (2 * K - 1)), zeros(nx * (K - 1)), false)
     end
 end

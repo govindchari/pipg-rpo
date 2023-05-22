@@ -3,14 +3,18 @@ using SparseArrays, IterativeSolvers
 struct PIPG_OPTS
     omega::Float64
     rho::Float64
-    max_iters::Int64
+    first_iter_iters::Int64
+    ws_iters::Int64
+    first_iter_extra::Int64
     check_iter::Int64
     function PIPG_OPTS()
-        omega = 300.0
+        omega = 350.0
         rho = 1.65
-        max_iters = 400
+        first_iter_iters = 30
+        ws_iters = 130
+        first_iter_extra = first_iter_iters - ws_iters
         check_iter = 1
-        new(omega, rho, max_iters, check_iter)
+        new(omega, rho, first_iter_iters, ws_iters, first_iter_extra, check_iter)
     end
 end
 function vectorize(p::ptr)
@@ -54,88 +58,98 @@ function vectorize(p::ptr)
     return P, q, H, h
 end
 function proj_ball!(x::SubArray{Float64,1,Vector{Float64},Tuple{UnitRange{Int64}},true}, r::Float64)
-    if (norm(x) > r)
-        x .= (r / norm(x)) .* x
+    nrm = norm(x)
+    if (nrm > r)
+        x .= (r / nrm) .* x
     end
 end
 function proj_box!(x::SubArray{Float64,1,Vector{Float64},Tuple{UnitRange{Int64}},true}, l::Float64, u::Float64)
     x .= min.(max.(x, l), u)
 end
 function proj_inter_halfspaces!(c, u1::Vector{Float64}, u2::Vector{Float64}, eta1::Float64, eta2::Float64)
-    eps = 1e-9
+    # eps = 1e-9
     a1 = dot(c, u1)
     a2 = dot(c, u2)
     b = dot(u1, u2)
-    if (max(abs(norm(u1) - 1), abs(norm(u2) - 1)) >= eps)
-        error("u1 and u2 must be unit vectors")
-    end
-    if abs(b - 1) <= eps
-        eta = min(eta1, eta2)
-        if a1 <= eta
-            c .= c
-        else
-            c .= c + (eta - a1) * u1
-        end
-    elseif abs(b + 1) <= eps
-        if eta2 <= -eta1
-            error("Empty Intersection of Halfspaces")
-        else
-            if a1 < -eta2
-                c .= c - (a1 + eta2) * u1
-            elseif (-eta2 <= a1 && a1 <= eta1)
-                c .= c
-            else
-                c .= c - (a1 - eta1) * u1
-            end
-        end
+    # if (max(abs(norm(u1) - 1), abs(norm(u2) - 1)) >= eps)
+    #     error("u1 and u2 must be unit vectors")
+    # end
+    # if abs(b - 1) <= eps
+    #     eta = min(eta1, eta2)
+    #     if a1 <= eta
+    #         c .= c
+    #     else
+    #         c .= c + (eta - a1) * u1
+    #     end
+    # elseif abs(b + 1) <= eps
+    #     if eta2 <= -eta1
+    #         error("Empty Intersection of Halfspaces")
+    #     else
+    #         if a1 < -eta2
+    #             c .= c - (a1 + eta2) * u1
+    #         elseif (-eta2 <= a1 && a1 <= eta1)
+    #             c .= c
+    #         else
+    #             c .= c - (a1 - eta1) * u1
+    #         end
+    #     end
+    # else
+    nu1 = 0.0
+    nu2 = 0.0
+    # if a1 <= eta1 && a2 <= eta2
+    # nu1 = 0.0
+    # nu2 = 0.0
+    if a1 - eta1 > b * (a2 - eta2) && a2 - eta2 > b * (a1 - eta1)
+        nu1 = (a1 - eta1 - b * (a2 - eta2)) / (1 - b^2)
+        nu2 = (a2 - eta2 - b * (a1 - eta1)) / (1 - b^2)
+    elseif a2 > eta2 && a1 - eta1 <= b * (a2 - eta2)
+        # nu1 = 0.0
+        nu2 = a2 - eta2
     else
-        nu1 = 0.0
-        nu2 = 0.0
-        if a1 <= eta1 && a2 <= eta2
-            nu1 = 0.0
-            nu2 = 0.0
-        elseif a1 - eta1 > b * (a2 - eta2) && a2 - eta2 > b * (a1 - eta1)
-            nu1 = (a1 - eta1 - b * (a2 - eta2)) / (1 - b^2)
-            nu2 = (a2 - eta2 - b * (a1 - eta1)) / (1 - b^2)
-        elseif a2 > eta2 && a1 - eta1 <= b * (a2 - eta2)
-            nu1 = 0
-            nu2 = a2 - eta2
-        else
-            nu1 = a1 - eta1
-            nu2 = 0
-        end
-        c .= c - nu1 * u1 - nu2 * u2
+        nu1 = a1 - eta1
+        # nu2 = 0.0
     end
-    return c
+    c .= c - nu1 * u1 - nu2 * u2
+    # end
 end
 function project_D!(p::ptr, z::Vector{Float64})
+    vmax_sc = par.vmax / maximum(diag(par.Px[4:6, 4:6]))
+    umax_sc = par.umax / maximum(diag(par.Pu))
+
+    # State Constraints
     for k = 1:p.K
         idx_r = p.nx * (k - 1) + 1
         idx_v = p.nx*(k-1)+4:p.nx*k
-        idx_u = (p.nx*K)+p.nu*(k-1)+1:(p.nx*K)+p.nu*k
         idx_vb = p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (p.K - 1) + k
 
         # Keepout Zone
-        Xi(k) = (p.xref[1:3, k] - par.rc) / norm((p.xref[1:3, k] - par.rc))
-        u1 = [-p.par.Px[1:3, 1:3] * Xi(k); -1.0]
-        eta1 = norm(p.xref[1:3, k] - par.rc) - p.par.rho - dot(Xi(k), p.xref[1:3, k])
+        nxref = norm(p.xref[1:3, k] - par.rc)
+        Xik = ((p.xref[1:3, k] - par.rc) / nxref)
+        u1 = [-p.par.Px[1:3, 1:3] * Xik; -1.0]
+        eta1 = nxref - p.par.rho - dot(Xik, p.xref[1:3, k])
         nrm = norm(u1)
         u1 /= nrm
         eta1 /= nrm
-        proj_inter_halfspaces!((@view z[[idx_r, idx_r + 1, idx_r + 2, idx_vb]]), u1, [0.0; 0.0; 0.0; -1.0], eta1, 0.0)
+        u2 = [0.0; 0.0; 0.0; -1.0]
+        proj_inter_halfspaces!((@view z[[idx_r, idx_r + 1, idx_r + 2, idx_vb]]), u1, u2, eta1, 0.0)
 
         # Max Speed
-        proj_ball!((@view z[idx_v]), par.vmax / maximum(diag(par.Px[4:6, 4:6])))
+        proj_ball!((@view z[idx_v]), vmax_sc)
+    end
 
-        # Max Control
-        proj_ball!((@view z[idx_u]), par.umax / maximum(diag(par.Pu)))
+    # Control Constraint
+    for k = 1:p.K
+        idx_u = (p.nx*K)+p.nu*(k-1)+1:(p.nx*K)+p.nu*k
+        proj_ball!((@view z[idx_u]), umax_sc)
     end
 
     # L1 Norm Reformulation for virtual control
     base = p.nx * p.K + p.nu * (p.K - 1) + (p.K - 1)
     shift = p.nx * (p.K - 1)
+    u1 = [-1.0; -1.0] / sqrt(2)
+    u2 = [1.0; -1.0] / sqrt(2)
     for k = 1:p.nx*(p.K-1)
-        proj_inter_halfspaces!((@view z[[base + k, base + shift + k]]), [-1.0; -1.0] / sqrt(2), [1.0; -1.0] / sqrt(2), 0.0, 0.0)
+        proj_inter_halfspaces!((@view z[[base + k, base + shift + k]]), u1, u2, 0.0, 0.0)
     end
 
     # Dilation Constraints
@@ -154,7 +168,7 @@ function compute_stepsizes(p::ptr, opts::PIPG_OPTS, H)
     beta = opts.omega * alpha
     return alpha, beta
 end
-function package_solution(p::ptr, xi::Vector{Float64})
+function package_solution(p::ptr, xi::Vector{Float64}, eta::Vector{Float64})
     # Package z back into ptr struct
     x = xi[1:p.nx*p.K]
     u = [xi[p.nx*p.K+1:p.nx*p.K+p.nu*(p.K-1)]; 0; 0; 0]
@@ -170,6 +184,9 @@ function package_solution(p::ptr, xi::Vector{Float64})
     p.σref .= par.Pσ * I(p.K - 1) * σ
     p.vc .= reshape(vc, (p.nx, (p.K - 1)))
     p.vb .= vb
+    p.zws .= xi
+    p.wws .= eta
+    p.ws = true
 end
 function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, P, q, H, h)
     stop = false
@@ -177,11 +194,12 @@ function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, P, q, H, h)
 
     a, b = compute_stepsizes(p, opts, H)
 
-    z = zeros(length(q))
-    w = zeros(length(h))
-    xi = zeros(length(q))
-    eta = zeros(length(h))
+    z = p.zws
+    w = p.wws
+    xi = p.zws
+    eta = p.wws
 
+    # Hyperplane Normalization
     for i = 1:size(H)[1]
         nrm = norm(H[i, :])
         H[i, :] /= nrm
@@ -189,19 +207,23 @@ function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, P, q, H, h)
     end
 
     while (stop == false)
-        z = xi - a * (P * xi + q + H' * eta)
-        project_D!(p, z)
-        w = eta + b * (H * (2 * z - xi) - h)
+        primal_update = @elapsed z = xi - a * (P * xi + q + H' * eta)
+        projection = @elapsed project_D!(p, z)
+        dual_update = @elapsed w = eta + b * (H * (2 * z - xi) - h)
         xi = (1 - opts.rho) * xi + opts.rho * z
         eta = (1 - opts.rho) * eta + opts.rho * w
+
+        # println("Primal Update: ", primal_update)
+        # println("Projection: ", projection)
+        # println("Dual Update: ", dual_update)
 
         if mod(k, opts.check_iter) == 0
             # r = p.wtr * (sum((par.Px \ p.xref)[:].^2) + sum((par.Pu \ p.uref)[:].^2) + sum((par.Pσ \ p.σref).^2))
             # @printf("%3d   %10.3e  %9.2e\n",
             # k, norm(0.5 * dot(xi, P * xi) + dot(q, xi) + r), norm(H * xi - h))
-            stop = k >= opts.max_iters
+            stop = k >= opts.first_iter_extra * (!p.ws) + opts.ws_iters
         end
         k += 1
     end
-    return xi, k - 1
+    return xi, eta, k - 1
 end
