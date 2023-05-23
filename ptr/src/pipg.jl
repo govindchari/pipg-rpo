@@ -3,19 +3,54 @@ using SparseArrays, IterativeSolvers
 struct PIPG_OPTS
     omega::Float64
     rho::Float64
-    first_iter_iters::Int64
-    ws_iters::Int64
-    first_iter_extra::Int64
+    max_iters::Int64
     check_iter::Int64
+    eps_abs_pow::Float64
+    eps_rel_pow::Float64
+    max_iter_pow::Int64
+    eps_buff::Float64
     function PIPG_OPTS()
-        omega = 350.0
+        omega = 375.0
         rho = 1.65
-        first_iter_iters = 30
-        ws_iters = 130
-        first_iter_extra = first_iter_iters - ws_iters
+        max_iters = 50
         check_iter = 1
-        new(omega, rho, first_iter_iters, ws_iters, first_iter_extra, check_iter)
+        eps_abs_pow = 1e-3
+        eps_rel_pow = 1e-3
+        max_iter_pow = 25
+        eps_buff = 0.01
+        new(omega, rho, max_iters, check_iter, eps_abs_pow, eps_rel_pow, max_iter_pow, eps_buff)
     end
+end
+struct CACHE
+    r1::Array{Float64,1}
+    r2::Array{Float64,1}
+    pwr1::Array{Float64,1}
+    pwr2::Array{Float64,1}
+    function CACHE(p::ptr)
+        new(zeros(3), zeros(3), ones(p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (2 * p.K - 1)), ones(p.nx * (p.K - 1)))
+    end
+end
+function power_iteration(H, Ht, opts::PIPG_OPTS, c::CACHE)
+    sig = 0
+    sig_old = 1e6
+    iter = 1
+    while (abs(sig - sig_old) >= opts.eps_abs_pow + opts.eps_rel_pow * max(sig, sig_old) && iter < opts.max_iter_pow)
+        sig_old = sig
+        mul!(c.pwr2, H, c.pwr1)
+        mul!(c.pwr1, Ht, c.pwr2)
+        sig = norm(c.pwr1)
+        c.pwr1 ./= sig
+        iter += 1
+    end
+    sig *= (1 + opts.eps_buff)
+    return sig
+end
+function compute_stepsizes(p::ptr, opts::PIPG_OPTS, c::CACHE, H)
+    normP = 2.0 * (1.0 + p.wtr)
+    norm2H = power_iteration(H, H', opts, c)
+    alpha = 2 / (sqrt(normP^2 + 4 * opts.omega * norm2H) + normP)
+    beta = opts.omega * alpha
+    return alpha, beta
 end
 function vectorize(p::ptr)
     par = p.par
@@ -24,7 +59,7 @@ function vectorize(p::ptr)
     nc = nx * (p.K - 1)   # Number of equality constraints in vectorized problem
 
     # Construct P
-    Pvec = [2.0 * p.wtr * ones(nx * p.K); 2.0 * (1 + p.wtr) * ones(nu * (p.K - 1)); 2.0 * p.wtr * ones(p.K - 1); zeros(nx * (p.K - 1)); zeros(nx * (p.K - 1)); zeros(p.K)]
+    Pvec = [2.0 * p.wtr * ones(nx * p.K); 2.0 * (1.0 + p.wtr) * ones(nu * (p.K - 1)); 2.0 * p.wtr * ones(p.K - 1); zeros(nx * (p.K - 1)); zeros(nx * (p.K - 1)); zeros(p.K)]
     P = Diagonal(Pvec)
 
     # Construct q
@@ -109,36 +144,44 @@ function proj_inter_halfspaces!(c, u1::Vector{Float64}, u2::Vector{Float64}, eta
         nu1 = a1 - eta1
         # nu2 = 0.0
     end
-    c .= c - nu1 * u1 - nu2 * u2
+    @. c = c - nu1 * u1 - nu2 * u2
     # end
 end
-function project_D!(p::ptr, z::Vector{Float64})
+function project_D!(p::ptr, z::Vector{Float64}, c::CACHE)
+    c.r1 .= 0
+    c.r2 .= 0
+
     vmax_sc = par.vmax / maximum(diag(par.Px[4:6, 4:6]))
     umax_sc = par.umax / maximum(diag(par.Pu))
 
     # State Constraints
-    for k = 1:p.K
+    u2 = [0.0; 0.0; 0.0; -1.0]
+    u1 = [0.0; 0.0; 0.0; -1.0]
+    @inbounds for k = 1:p.K
         idx_r = p.nx * (k - 1) + 1
         idx_v = p.nx*(k-1)+4:p.nx*k
         idx_vb = p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (p.K - 1) + k
 
         # Keepout Zone
-        nxref = norm(p.xref[1:3, k] - par.rc)
-        Xik = ((p.xref[1:3, k] - par.rc) / nxref)
-        u1 = [-p.par.Px[1:3, 1:3] * Xik; -1.0]
-        eta1 = nxref - p.par.rho - dot(Xik, p.xref[1:3, k])
-        nrm = norm(u1)
-        u1 /= nrm
-        eta1 /= nrm
-        u2 = [0.0; 0.0; 0.0; -1.0]
-        proj_inter_halfspaces!((@view z[[idx_r, idx_r + 1, idx_r + 2, idx_vb]]), u1, u2, eta1, 0.0)
+        @. c.r1 = p.xref[1:3, k] - par.rc
+        nxref = norm(c.r1)
+        @. c.r1 = c.r1 / nxref
 
+        mul!(c.r2, (@view p.par.Px[1:3, 1:3]), -c.r1)
+        u1[1:3] .= c.r2
+        eta1 = nxref - p.par.rho - dot(c.r1, (@view p.xref[1:3, k]))
+
+        nrm = norm(u1)
+        u1 ./= nrm
+        eta1 /= nrm
+
+        proj_inter_halfspaces!((@view z[[idx_r, idx_r + 1, idx_r + 2, idx_vb]]), u1, u2, eta1, 0.0)
         # Max Speed
         proj_ball!((@view z[idx_v]), vmax_sc)
     end
 
     # Control Constraint
-    for k = 1:p.K
+    @inbounds for k = 1:p.K
         idx_u = (p.nx*K)+p.nu*(k-1)+1:(p.nx*K)+p.nu*k
         proj_ball!((@view z[idx_u]), umax_sc)
     end
@@ -148,7 +191,7 @@ function project_D!(p::ptr, z::Vector{Float64})
     shift = p.nx * (p.K - 1)
     u1 = [-1.0; -1.0] / sqrt(2)
     u2 = [1.0; -1.0] / sqrt(2)
-    for k = 1:p.nx*(p.K-1)
+    @inbounds for k = 1:p.nx*(p.K-1)
         proj_inter_halfspaces!((@view z[[base + k, base + shift + k]]), u1, u2, 0.0, 0.0)
     end
 
@@ -160,14 +203,7 @@ function project_D!(p::ptr, z::Vector{Float64})
     z[1:p.nx] = par.Px \ par.x0
     z[p.K*p.nx-p.nx+1:p.K*p.nx] = par.Px \ par.xT
 end
-function compute_stepsizes(p::ptr, opts::PIPG_OPTS, H)
-    normP = 2.0 * (1.0 + p.wtr)
-    HtH = H' * H
-    norm2H = real(powm(HtH)[1])
-    alpha = 2 / (sqrt(normP^2 + 4 * opts.omega * norm2H) + normP)
-    beta = opts.omega * alpha
-    return alpha, beta
-end
+
 function package_solution(p::ptr, xi::Vector{Float64}, eta::Vector{Float64})
     # Package z back into ptr struct
     x = xi[1:p.nx*p.K]
@@ -188,42 +224,27 @@ function package_solution(p::ptr, xi::Vector{Float64}, eta::Vector{Float64})
     p.wws .= eta
     p.ws = true
 end
-function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, P, q, H, h)
-    stop = false
-    k = 1
-
-    a, b = compute_stepsizes(p, opts, H)
-
+function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, c::CACHE, P, q, H, h)
+    a, b = compute_stepsizes(p, opts, c, H)
     z = p.zws
     w = p.wws
     xi = p.zws
     eta = p.wws
 
-    # Hyperplane Normalization
-    for i = 1:size(H)[1]
-        nrm = norm(H[i, :])
-        H[i, :] /= nrm
-        h[i] /= nrm
-    end
-
-    while (stop == false)
+    @inbounds for k = 1:opts.max_iters
         primal_update = @elapsed z = xi - a * (P * xi + q + H' * eta)
-        projection = @elapsed project_D!(p, z)
+        projection = @elapsed project_D!(p, z, c)
         dual_update = @elapsed w = eta + b * (H * (2 * z - xi) - h)
-        xi = (1 - opts.rho) * xi + opts.rho * z
-        eta = (1 - opts.rho) * eta + opts.rho * w
+        @. xi = (1 - opts.rho) * xi + opts.rho * z
+        @. eta = (1 - opts.rho) * eta + opts.rho * w
 
-        # println("Primal Update: ", primal_update)
-        # println("Projection: ", projection)
-        # println("Dual Update: ", dual_update)
+        # println("Projection Percentage: ", 100.0 * projection / (primal_update + projection + dual_update))
 
-        if mod(k, opts.check_iter) == 0
-            # r = p.wtr * (sum((par.Px \ p.xref)[:].^2) + sum((par.Pu \ p.uref)[:].^2) + sum((par.Pσ \ p.σref).^2))
-            # @printf("%3d   %10.3e  %9.2e\n",
-            # k, norm(0.5 * dot(xi, P * xi) + dot(q, xi) + r), norm(H * xi - h))
-            stop = k >= opts.first_iter_extra * (!p.ws) + opts.ws_iters
-        end
-        k += 1
+        # r = p.wtr * (sum((par.Px \ p.xref)[:].^2) + sum((par.Pu \ p.uref)[:].^2) + sum((par.Pσ \ p.σref).^2))
+        # @printf("%3d   %10.3e  %9.2e\n",
+        # k, norm(0.5 * dot(xi, P * xi) + dot(q, xi) + r), norm(H * xi - h))
+        # stop = k >= opts.max_iters
+        # k += 1
     end
-    return xi, eta, k - 1
+    return xi, eta, opts.max_iters
 end

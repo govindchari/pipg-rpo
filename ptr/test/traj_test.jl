@@ -43,5 +43,5 @@ println("PIPG Time: ", sum(time_pipg))
 println("Performance: ", sum(time_pipg) / sum(time_ecos))
 println("PIPG within ", (norm(zecos - zpipg) / norm(zecos)) * 100, " percent of ECOS")
 
-# plot_all(pecos)
+# plot_all(ppipg)
 

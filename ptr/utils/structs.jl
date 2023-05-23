@@ -115,7 +115,7 @@ mutable struct ptr
         # wvc = 1e2
         # wvb = 1
         wtr = 0.2
-        wvc = 15.0
+        wvc = 13.0
         wvb = 0.1
 
         if (disc != :foh && disc != :impulsive)

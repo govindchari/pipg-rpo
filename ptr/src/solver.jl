@@ -11,6 +11,7 @@ function solveTraj!(p::ptr, slvr::Symbol, verbose::Bool)
         println("------------------------------------------------------------------------")
     end
     opts = PIPG_OPTS()
+    c = CACHE(p)
     time = []
     pipg_iter = 0
     z = zeros(p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (2 * p.K - 1))
@@ -18,10 +19,10 @@ function solveTraj!(p::ptr, slvr::Symbol, verbose::Bool)
         discretize!(p)
         P, q, H, h = vectorize(p)
         if slvr == :ecos
-            z, t = solveSubproblemVectorized!(p, P, q, H, h)
+            z, t = solveSubproblemVectorizedJuMP!(p, P, q, H, h)
             package_solution(p, z, zeros(p.nx * (p.K - 1)))
         elseif slvr == :pipg
-            t = @elapsed z, w, pipg_iter = pipg_vec_solve!(p, opts, P, q, H, h)
+            t = @elapsed z, w, pipg_iter = pipg_vec_solve!(p, opts, c, P, q, H, h)
             package_solution(p, z, w)
         end
         append!(time, t)
