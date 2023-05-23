@@ -1,4 +1,4 @@
-using Convex, ECOS, JuMP
+using Convex, ECOS, SCS, JuMP
 
 function solveSubproblem!(p::ptr)
 

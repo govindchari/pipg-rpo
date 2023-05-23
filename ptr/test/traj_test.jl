@@ -40,8 +40,19 @@ time_pipg, zpipg = solveTraj!(ppipg, :pipg, true)
 
 println("ECOS Time: ", sum(time_ecos))
 println("PIPG Time: ", sum(time_pipg))
-println("Performance: ", sum(time_pipg) / sum(time_ecos))
-println("PIPG within ", (norm(zecos - zpipg) / norm(zecos)) * 100, " percent of ECOS")
+println("Performance: ", sum(time_ecos) / sum(time_pipg))
+acc = (norm(zecos - zpipg) / norm(zecos)) * 100
+println("PIPG within ", acc, " percent of ECOS")
+
+if acc > 1.0
+    println("####################")
+    println("### NOT ACCURATE ###")
+    println("####################")
+end
+
+# figure(dpi=200)
+# plot(time_ecos)
+# plot(time_pipg)
 
 # plot_all(ppipg)
 

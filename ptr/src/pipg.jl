@@ -98,6 +98,7 @@ function proj_ball!(x::SubArray{Float64,1,Vector{Float64},Tuple{UnitRange{Int64}
         x .= (r / nrm) .* x
     end
 end
+
 function proj_box!(x::SubArray{Float64,1,Vector{Float64},Tuple{UnitRange{Int64}},true}, l::Float64, u::Float64)
     x .= min.(max.(x, l), u)
 end
@@ -134,9 +135,12 @@ function proj_inter_halfspaces!(c, u1::Vector{Float64}, u2::Vector{Float64}, eta
     # if a1 <= eta1 && a2 <= eta2
     # nu1 = 0.0
     # nu2 = 0.0
-    if a1 - eta1 > b * (a2 - eta2) && a2 - eta2 > b * (a1 - eta1)
-        nu1 = (a1 - eta1 - b * (a2 - eta2)) / (1 - b^2)
-        nu2 = (a2 - eta2 - b * (a1 - eta1)) / (1 - b^2)
+    case1 = a1 - eta1 - b * (a2 - eta2)
+    case2 = a2 - eta2 - b * (a1 - eta1)
+    if case1 > 0 && case2 > 0
+        den = (1 - b^2)
+        nu1 = case1 / den
+        nu2 = case2 / den
     elseif a2 > eta2 && a1 - eta1 <= b * (a2 - eta2)
         # nu1 = 0.0
         nu2 = a2 - eta2
@@ -148,22 +152,24 @@ function proj_inter_halfspaces!(c, u1::Vector{Float64}, u2::Vector{Float64}, eta
     # end
 end
 function project_D!(p::ptr, z::Vector{Float64}, c::CACHE)
+
     c.r1 .= 0
     c.r2 .= 0
 
-    vmax_sc = par.vmax / maximum(diag(par.Px[4:6, 4:6]))
-    umax_sc = par.umax / maximum(diag(par.Pu))
+    vmax_sc = p.par.vmax / maximum(diag(p.par.Px[4:6, 4:6]))
+    umax_sc = p.par.umax / maximum(diag(p.par.Pu))
 
     # State Constraints
     u2 = [0.0; 0.0; 0.0; -1.0]
     u1 = [0.0; 0.0; 0.0; -1.0]
+
     @inbounds for k = 1:p.K
         idx_r = p.nx * (k - 1) + 1
         idx_v = p.nx*(k-1)+4:p.nx*k
         idx_vb = p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (p.K - 1) + k
-
         # Keepout Zone
-        @. c.r1 = p.xref[1:3, k] - par.rc
+        @. c.r1 = (@view p.xref[1:3, k]) - p.par.rc
+
         nxref = norm(c.r1)
         @. c.r1 = c.r1 / nxref
 
@@ -181,27 +187,26 @@ function project_D!(p::ptr, z::Vector{Float64}, c::CACHE)
     end
 
     # Control Constraint
-    @inbounds for k = 1:p.K
+    @inbounds @simd for k = 1:p.K
         idx_u = (p.nx*K)+p.nu*(k-1)+1:(p.nx*K)+p.nu*k
         proj_ball!((@view z[idx_u]), umax_sc)
     end
-
     # L1 Norm Reformulation for virtual control
     base = p.nx * p.K + p.nu * (p.K - 1) + (p.K - 1)
     shift = p.nx * (p.K - 1)
     u1 = [-1.0; -1.0] / sqrt(2)
     u2 = [1.0; -1.0] / sqrt(2)
-    @inbounds for k = 1:p.nx*(p.K-1)
+    @inbounds @simd for k = 1:p.nx*(p.K-1)
         proj_inter_halfspaces!((@view z[[base + k, base + shift + k]]), u1, u2, 0.0, 0.0)
     end
 
     # Dilation Constraints
     idx_σ = p.nx*p.K+p.nu*(p.K-1)+1:p.nx*p.K+p.nu*(p.K-1)+p.K-1
-    proj_box!((@view z[idx_σ]), par.σmin / par.Pσ, par.σmax / par.Pσ)
+    proj_box!((@view z[idx_σ]), p.par.σmin / p.par.Pσ, p.par.σmax / p.par.Pσ)
 
     # Boundary Conditions
-    z[1:p.nx] = par.Px \ par.x0
-    z[p.K*p.nx-p.nx+1:p.K*p.nx] = par.Px \ par.xT
+    z[1:p.nx] = p.par.Px \ p.par.x0
+    z[p.K*p.nx-p.nx+1:p.K*p.nx] = p.par.Px \ p.par.xT
 end
 
 function package_solution(p::ptr, xi::Vector{Float64}, eta::Vector{Float64})
@@ -213,11 +218,11 @@ function package_solution(p::ptr, xi::Vector{Float64}, eta::Vector{Float64})
     # G = xi[3*(K-1)+(K-1)+6*(2*K-1)+1:3*(K-1)+(K-1)+6*(3*K-2)]
     vb = xi[p.nu*(p.K-1)+(p.K-1)+p.nx*(p.nu*p.K-2)+1:end]
 
-    p.Δ = sqrt(norm((x - (par.Px\p.xref)[:]))^2 + norm((u - (par.Pu\p.uref)[:]))^2)
+    p.Δ = sqrt(norm((x - (p.par.Px\p.xref)[:]))^2 + norm((u - (p.par.Pu\p.uref)[:]))^2)
     p.Δσ = norm(σ - p.σref / par.Pσ)
-    p.xref .= par.Px * reshape(x, (6, K))
-    p.uref .= par.Pu * reshape(u, (3, K))
-    p.σref .= par.Pσ * I(p.K - 1) * σ
+    p.xref .= p.par.Px * reshape(x, (6, K))
+    p.uref .= p.par.Pu * reshape(u, (3, K))
+    p.σref .= p.par.Pσ * I(p.K - 1) * σ
     p.vc .= reshape(vc, (p.nx, (p.K - 1)))
     p.vb .= vb
     p.zws .= xi
@@ -225,26 +230,30 @@ function package_solution(p::ptr, xi::Vector{Float64}, eta::Vector{Float64})
     p.ws = true
 end
 function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, c::CACHE, P, q, H, h)
-    a, b = compute_stepsizes(p, opts, c, H)
-    z = p.zws
-    w = p.wws
-    xi = p.zws
-    eta = p.wws
+    t = @elapsed begin
 
-    @inbounds for k = 1:opts.max_iters
-        primal_update = @elapsed z = xi - a * (P * xi + q + H' * eta)
-        projection = @elapsed project_D!(p, z, c)
-        dual_update = @elapsed w = eta + b * (H * (2 * z - xi) - h)
-        @. xi = (1 - opts.rho) * xi + opts.rho * z
-        @. eta = (1 - opts.rho) * eta + opts.rho * w
+        a, b = compute_stepsizes(p, opts, c, H)
 
-        # println("Projection Percentage: ", 100.0 * projection / (primal_update + projection + dual_update))
+        z = p.zws
+        w = p.wws
+        xi = p.zws
+        eta = p.wws
 
-        # r = p.wtr * (sum((par.Px \ p.xref)[:].^2) + sum((par.Pu \ p.uref)[:].^2) + sum((par.Pσ \ p.σref).^2))
-        # @printf("%3d   %10.3e  %9.2e\n",
-        # k, norm(0.5 * dot(xi, P * xi) + dot(q, xi) + r), norm(H * xi - h))
-        # stop = k >= opts.max_iters
-        # k += 1
+        @inbounds for k = 1:opts.max_iters
+            primal_update = @elapsed z = xi - a * (P * xi + q + H' * eta)
+            projection = @elapsed project_D!(p, z, c)
+            dual_update = @elapsed w = eta + b * (H * (2 * z - xi) - h)
+            ex1 = @elapsed xi .= (1 - opts.rho) .* xi .+ opts.rho .* z
+            ex2 = @elapsed eta = (1 - opts.rho) .* eta .+ opts.rho .* w
+
+            # println("Projection Percentage: ", 100.0 * projection / (primal_update + projection + dual_update + ex1 + ex2))
+
+            # r = p.wtr * (sum((par.Px \ p.xref)[:].^2) + sum((par.Pu \ p.uref)[:].^2) + sum((par.Pσ \ p.σref).^2))
+            # @printf("%3d   %10.3e  %9.2e\n",
+            # k, norm(0.5 * dot(xi, P * xi) + dot(q, xi) + r), norm(H * xi - h))
+            # stop = k >= opts.max_iters
+            # k += 1
+        end
     end
-    return xi, eta, opts.max_iters
+    return xi, eta, opts.max_iters, t
 end
