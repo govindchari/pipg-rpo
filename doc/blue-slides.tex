@@ -1,0 +1,203 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{Copenhagen}
+\usepackage{amsmath, nccmath}
+\usepackage{multirow}
+\usepackage{xcolor,pifont}
+
+\newcommand{\cmark}{\textcolor{green}{\text{\ding{51}}}}
+\newcommand{\xmark}{\textcolor{red}{\text{\ding{55}}}}
+\newcommand{\range}[2]{#1\!:\!#2} % range
+\newcommand{\f}[2]{#1\!\left(#2\right)} % function
+
+
+\setbeamertemplate{navigation symbols}{}
+
+\usepackage[utf8]{inputenc}
+\usepackage{chari}
+
+\title{PIPG for RPOD}
+\author{Govind Chari}
+\date{May 2023}
+\institute{Univeristy of Washington}
+\logo{\includegraphics[width=1.8cm]{img/seal_black.pdf}\hspace*{8cm}~\includegraphics[height=2cm]{img/ACL_logo.png}}
+
+\begin{document}
+\begin{frame}
+    \titlepage
+\end{frame}
+
+\logo{}
+
+% \begin{frame}{Solve Speed}
+%     \begin{center}
+%         \begin{figure}
+%             \includegraphics[width=8cm]{img/DQG_solve_time.pdf}
+%         \end{figure}
+%     \end{center}
+% \end{frame}
+
+\begin{frame}{PIPG Overview}
+    \begin{itemize}
+        \item First order primal-dual conic optimizer
+        \item Easily verifiable
+        \item Factorization free
+        \item Intuitive algorithm
+        \item Can be coded in an afternoon
+        \item Supports infeasibility detection
+        \item Very fast (3-7x faster than ECOS)
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Comparison with ECOS}
+    \begin{center}
+        \begin{tabular}{ |p{4cm}||p{1cm}|p{1cm}|}
+            \hline
+              & ECOS & PIPG \\
+            \hline
+            Verification Ease   & \xmark    &\cmark\\
+            Factorization Free&   \xmark  & \cmark\\
+            Understandable &   \xmark  & \cmark\\
+            Implementation Ease&   \xmark  & \cmark\\
+            Infeasibility Detection&   \cmark  & \cmark\\
+            Tuning Free&   \cmark  & \xmark\\
+            \hline
+        \end{tabular}       
+    \end{center}
+\end{frame}
+
+\begin{frame}{PIPG Algorithm}
+    \vspace{-0.5cm}
+    \begin{columns}[T]
+        \begin{column}{.4\textwidth}
+            \begin{block}{Optimization Problem}
+                \begin{fleqn}
+                    \begin{equation*}
+                        \begin{aligned}
+                        \min_{z} \quad & \frac{1}{2}z^{\top}Pz+q^\top z\\
+                        \textrm{s.t.} \quad & Hz - h = 0\\
+                          &z \in \D    \\
+                        \end{aligned}
+                    \end{equation*}
+                \end{fleqn}
+        \end{block}
+        \end{column}
+        \begin{column}{.6\textwidth}
+            \begin{block}{Algorithm}
+                    \begin{fleqn}
+                            \begin{equation*}
+                                z^{k+1} \gets \Pi_\D \brac{z^k - \alpha (Pz^k + q + H ^ \top w^k)}
+                            \end{equation*}
+                            \vspace*{-0.5cm}
+                            \begin{equation*}
+                                w^{k+1} \gets w^k + \beta(H(2z^{k+1}-z^k) - h)
+                            \end{equation*}
+                    \end{fleqn}
+            \end{block}
+        \end{column}
+    \end{columns}
+    \vspace{0.25cm}
+    \begin{columns}[T]
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=6.75cm]{img/pipg_iterates.png}
+        \end{column}
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=6.75cm]{img/actual_pipg_iterates.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Infeasibility Detection - Dual Infeasibility}
+    Dual Infeasibility Criteria: 
+    
+    \[\lim_{k\to\infty} \|z^{k+1}-z^k\| \neq 0\]
+    \begin{columns}[T]
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=7cm]{img/dual_infeas_pipg_iters.png}
+        \end{column}
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=7cm]{img/dual_infeas_prim_iters.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Infeasibility Detection - Primal Infeasibility}
+    Primal Infeasibility Criteria: 
+    
+    \[\lim_{k\to\infty} \|w^{k+1}-w^k\| \neq 0\]
+    \begin{columns}[T]
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=7cm]{img/prim_infeas_pipg_iters.png}
+        \end{column}
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=7cm]{img/prim_infeas_dual_iters.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+\begin{frame}{Customization}
+\end{frame}
+
+\begin{frame}{Continuous-time Nonconvex Problem}
+    \begin{equation*}
+        % \small
+            \begin{aligned}
+            \underset{t_{f},\,{x}(t), {u}(t)}{\text{minimize}} &
+            && \int_{0}^{t_f} \|\f{u}{t}\|_2^2 \,dt \\
+            \text{subject to} &
+            && \forall t \in [0, t_f) \\
+            \fbox{\text{CW Dynamics}} &&& {\f{\dot{{x}}}{t}} = \f{f}{{\f{{x}}{t}}, {\f{{u}}{t}}} \\
+            \fbox{\text{Max delta-v}} &&& \|\f{u}{t}\|_2 \le u_{\max}\\
+            \fbox{\text{Keepout Zone}} &&& 
+            \|{r}(t)-r_c\|_2 \geq \rho \hphantom{\qquad\qquad} \\
+            \fbox{\text{Max Speed}}
+            &&& \|{v}(t)\|_2 \leq v_{\mathrm{max}} \\
+            \fbox{\text{Initial Conditions}}
+            &&& {r}(0) = {r}_i \\
+            &&& {v}(0) = {v}_i \\
+            \fbox{\text{Terminal Conditions}}
+            &&& {r}(t_f) = {0}_{3 \times 1} \\
+            &&& {v}(t_f) = {0}_{3 \times 1} \\
+            \end{aligned}
+        \end{equation*}
+\end{frame}
+\begin{frame}{Successive Convex Programming (SCP)}
+\end{frame}
+\begin{frame}{Discrete-time Convex Subproblem}
+    \begin{center}
+
+    \resizebox{1.0\linewidth}{!}{$\begin{aligned}
+            \underset{\sigma,\,x, u}{\text{minimize}} &
+            && \sum_{k=1}^{K-1}\|u_k\|_2^2 + w_{tr}\left( \sum_{k=1}^{K}\|x_k-\hat{x}_k\|_2^2 + \sum_{k=1}^{K-1}[\|u_k-\hat{u}_k\|_2^2 + (\sigma_k-\hat{\sigma}_k)^2]\right) + w_{{vc}}\|\nu^{{c}}\|_1 + w_{{vb}}\sum_{k=1}^{K}\nu_k^b \\
+            \text{subject to} &
+            && \forall k \in [1, K] \\
+            \fbox{\text{Discrete Dynamics}} &&& {x_{k+1}} = A_kx_k + B_ku_k + S_k\sigma_k + c_k + \nu_k^c \\
+            \fbox{\text{Max delta-v}} &&& \|u_k\|_2 \le u_{\max}\\
+            \fbox{\text{Keepout Zone}} &&& 
+            \|\hat{r}_k-r_c\|_2 + \left(\frac{\hat{r}_k-r_c}{\|\hat{r}_k-r_c\|_2}\right)^\top (r_k-\hat{r}_k) + \nu_k^b \geq \rho \hphantom{\qquad\qquad} \\
+            &&& \nu_k^b \geq 0 \\
+            \fbox{\text{Max Speed}}
+            &&& \|v_k\|_2 \leq v_{\mathrm{max}} \\
+            \fbox{\text{Initial Conditions}}
+            &&& {r}(0) = {r}_i \\
+            &&& {v}(0) = {v}_i \\
+            \fbox{\text{Terminal Conditions}}
+            &&& {r}(t_f) = {0}_{3 \times 1} \\
+            &&& {v}(t_f) = {0}_{3 \times 1} \\
+            \end{aligned}$}
+
+        \end{center}
+\end{frame}
+\begin{frame}{Trajectory}
+\end{frame}
+\begin{frame}{Speed Results}
+\end{frame}
+\begin{frame}{Notes}
+    \begin{itemize}
+        \item Easily verifiable conic solver
+        \item Vectorized and devectorized
+        \item PIPG as full stack optimizaiton solution (Inf detection)
+        \item If it is slow you have scaling issues
+        \item Speed results
+    \end{itemize}
+\end{frame}
+
+\end{document}

@@ -240,19 +240,11 @@ function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, c::CACHE, P, q, H, h)
         eta = p.wws
 
         @inbounds for k = 1:opts.max_iters
-            primal_update = @elapsed z = xi - a * (P * xi + q + H' * eta)
-            projection = @elapsed project_D!(p, z, c)
-            dual_update = @elapsed w = eta + b * (H * (2 * z - xi) - h)
-            ex1 = @elapsed xi .= (1 - opts.rho) .* xi .+ opts.rho .* z
-            ex2 = @elapsed eta = (1 - opts.rho) .* eta .+ opts.rho .* w
-
-            # println("Projection Percentage: ", 100.0 * projection / (primal_update + projection + dual_update + ex1 + ex2))
-
-            # r = p.wtr * (sum((par.Px \ p.xref)[:].^2) + sum((par.Pu \ p.uref)[:].^2) + sum((par.Pσ \ p.σref).^2))
-            # @printf("%3d   %10.3e  %9.2e\n",
-            # k, norm(0.5 * dot(xi, P * xi) + dot(q, xi) + r), norm(H * xi - h))
-            # stop = k >= opts.max_iters
-            # k += 1
+            z = xi - a * (P * xi + q + H' * eta)
+            project_D!(p, z, c)
+            w = eta + b * (H * (2 * z - xi) - h)
+            xi .= (1 - opts.rho) .* xi .+ opts.rho .* z
+            eta = (1 - opts.rho) .* eta .+ opts.rho .* w
         end
     end
     return xi, eta, opts.max_iters, t
