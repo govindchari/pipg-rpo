@@ -3,7 +3,7 @@ using PyPlot
 using Printf
 using IterativeSolvers
 
-include("set_fonts.jl")
+include("../ptr/utils/set_plot.jl")
 
 function pipg(P, q, H, h)
 
@@ -97,7 +97,7 @@ let
     xlim([-10, 10])
     ylim([-10, 10])
     title("PIPG Iterates")
-    savefig("doc/img/dual_infeas_pipg_iters.png")
+    savefig("img/dual_infeas_pipg_iters.png")
 
     figure(dpi=200)
     plot(z1, color="blue")
@@ -106,6 +106,6 @@ let
     xlabel("Iteration")
     ylabel("Value")
     title("Primal Variables vs Iteration")
-    savefig("doc/img/dual_infeas_prim_iters.png")
+    savefig("img/dual_infeas_prim_iters.png")
     show()
 end

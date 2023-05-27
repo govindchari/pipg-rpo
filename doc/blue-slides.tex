@@ -9,17 +9,26 @@
 \newcommand{\range}[2]{#1\!:\!#2} % range
 \newcommand{\f}[2]{#1\!\left(#2\right)} % function
 
+% Custom colors
+\colorlet{royalblue}{blue!80!gray!80!green}
+\colorlet{customgreen}{green!70!blue!70!gray}
+\colorlet{navyblue}{blue!70!green!90!white}
+\colorlet{redorange}{orange!60!red!70!gray}
+
+% Colored text
+\newcommand{\rtx}[1]{{\color{redorange}#1}}
+\newcommand{\btx}[1]{{\color{royalblue}#1}}
 
 \setbeamertemplate{navigation symbols}{}
 
 \usepackage[utf8]{inputenc}
 \usepackage{chari}
 
-\title{PIPG for RPOD}
+\title{PIPG for Rendezvous}
 \author{Govind Chari}
 \date{May 2023}
 \institute{Univeristy of Washington}
-\logo{\includegraphics[width=1.8cm]{img/seal_black.pdf}\hspace*{8cm}~\includegraphics[height=2cm]{img/ACL_logo.png}}
+\logo{\includegraphics[width=1.8cm]{img/seal_black.pdf}\hspace*{10cm}~\includegraphics[height=2cm]{img/ACL_logo.png}}
 
 \begin{document}
 \begin{frame}
@@ -35,6 +44,15 @@
 %         \end{figure}
 %     \end{center}
 % \end{frame}
+
+\begin{frame}{To Do}
+    \begin{itemize}
+        \item Write conclusion
+        \item Rewrite customization
+        \item Fix logo locations in title
+    \end{itemize}
+\end{frame}
+
 
 \begin{frame}{PIPG Overview}
     \begin{itemize}
@@ -134,6 +152,52 @@
     \end{columns}
 \end{frame}
 \begin{frame}{Customization}
+    \framesubtitle{Exploiting Structure}
+    {\small%
+    \begin{columns}
+    \begin{column}[c]{0.4\textwidth}
+    \begin{center}
+    $\begin{aligned}
+        \underset{z}{\operatorname{minimize}}~~~&~\frac{1}{2}z^\top P z \\
+        \operatorname{subject~to}~&~Hz-h=0,~ z\in\mathbb{D}
+    \end{aligned}$
+    \vspace{1.8cm}
+    \uncover<3->{%
+    $\begin{aligned}
+        \rtx{w \gets {}}   & \rtx{v + \beta(Hz-h)}\\
+        \btx{z \gets {}}   & \btx{\Pi_{\mathbb{D}}[z - \alpha (Pz + H^\top w)]}\\
+        \rtx{v \gets {}}   & \rtx{v + \beta(Hz-h)}
+    \end{aligned}$}
+    \end{center}
+    \end{column}
+    \begin{column}{0.04\textwidth}
+    \begin{center}
+        \vspace{0.8cm}
+        \uncover<2->{$\rightarrow$}
+        \vspace{2.7cm}
+        \uncover<4->{$\rightarrow$}
+        \vspace{1cm}
+    \end{center}
+    \end{column}
+    \begin{column}[c]{0.55\textwidth}
+    \begin{center}
+    \uncover<2->{%
+    $\begin{aligned}
+        \underset{x_t,u_t}{\operatorname{minimize}}~~~&~x_N^\top Q_N x_N+\sum_{t=1}^{N-1} x_t^\top Q_t x_t + u_t^\top R_t u_t\\
+        \operatorname{subject~to}~&~x_{t+1} = A_t x_t + B_tu_t, \\
+        &~x_t\in\mathbb{X},~~u_t \in \mathbb{U}
+    \end{aligned}$}
+    \vspace{1cm}
+    \uncover<4>{%
+    $\begin{aligned}
+        \rtx{w_t \gets {}} & \rtx{v_t+\beta (x_{t+1}-A_tx_{t}-B_tu_{t})} \\
+        \btx{u_{t} \gets {}} & \btx{\Pi_{\mathbb{U}} [u_{t}-\alpha(R_tu_{t}-B_t^\top w_{t-1})]}\\
+        \btx{x_t \gets {}} & \btx{\Pi_{\mathbb{X}}[x_t-\alpha(Q_tx_t+ w_{t-1}-A_t^\top w_{t})]}\\
+        \rtx{v_t \gets {}} & \rtx{v_t +\beta (x_{t+1}-A_tx_{t}-B_tu_{t})}
+    \end{aligned}$}
+    \end{center}
+    \end{column}
+    \end{columns}}
 \end{frame}
 
 \begin{frame}{Continuous-time Nonconvex Problem}
@@ -160,6 +224,7 @@
         \end{equation*}
 \end{frame}
 \begin{frame}{Successive Convex Programming (SCP)}
+    \includegraphics[width=\linewidth]{img/scp_block_diagram_csm.png}
 \end{frame}
 \begin{frame}{Discrete-time Convex Subproblem}
     \begin{center}
@@ -170,6 +235,7 @@
             \text{subject to} &
             && \forall k \in [1, K] \\
             \fbox{\text{Discrete Dynamics}} &&& {x_{k+1}} = A_kx_k + B_ku_k + S_k\sigma_k + c_k + \nu_k^c \\
+            \fbox{\text{Dilation Constraints}} &&& \sigma_{\min} \leq \sigma_k \le \sigma_{\max}\\
             \fbox{\text{Max delta-v}} &&& \|u_k\|_2 \le u_{\max}\\
             \fbox{\text{Keepout Zone}} &&& 
             \|\hat{r}_k-r_c\|_2 + \left(\frac{\hat{r}_k-r_c}{\|\hat{r}_k-r_c\|_2}\right)^\top (r_k-\hat{r}_k) + \nu_k^b \geq \rho \hphantom{\qquad\qquad} \\
@@ -187,17 +253,64 @@
         \end{center}
 \end{frame}
 \begin{frame}{Trajectory}
+    \vspace{-0.25cm}
+    \begin{columns}[T]
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=8cm]{img/traj_side.png}
+        \end{column}
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=8cm]{img/traj_top.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Trajectory}
+    \vspace{-0.25cm}
+    \begin{columns}[T]
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=8cm]{img/speed.png}
+        \end{column}
+        \begin{column}{.5\textwidth}
+            \includegraphics[width=8cm]{img/control.png}
+        \end{column}
+    \end{columns}
 \end{frame}
 \begin{frame}{Speed Results}
+
+    % \vspace{-1cm}
+
+    \begin{columns}[T]
+        \begin{column}{.6\textwidth}
+            \includegraphics[width=\linewidth]{img/solve_speed.png}\begin{center}
+                {200 runs 3ms bins}
+            \end{center}
+        \end{column}
+        \begin{column}{.4\textwidth}
+            \begin{center}
+                \resizebox{1.0\linewidth}{!}{
+
+                \begin{tabular}{|p{2cm}||p{1.5cm}|p{1.5cm}|}
+                    \hline
+                      & ECOS & PIPG \\
+                    \hline
+                    Mean   & 261ms    & \textbf{42ms}\\
+                    Median &   267ms  & \textbf{44ms}\\
+                    STD &   23ms  & \textbf{5ms}\\
+                    \hline
+                \end{tabular} }
+
+                \vspace{0.5cm}
+
+            \end{center} 
+            
+            PIPG is \textcolor{red}{6.25x} faster even without customization
+
+      
+        \end{column}
+    \end{columns}
 \end{frame}
-\begin{frame}{Notes}
-    \begin{itemize}
-        \item Easily verifiable conic solver
-        \item Vectorized and devectorized
-        \item PIPG as full stack optimizaiton solution (Inf detection)
-        \item If it is slow you have scaling issues
-        \item Speed results
-    \end{itemize}
+\begin{frame}{Conclusion}
+    
 \end{frame}
 
 \end{document}

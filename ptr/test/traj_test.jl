@@ -54,5 +54,5 @@ end
 # plot(time_ecos)
 # plot(time_pipg)
 
-# plot_all(ppipg)
+plot_all(ppipg)
 

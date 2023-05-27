@@ -1,11 +1,9 @@
-using PyPlot
-
 function set_fonts()::Nothing
     # Set the figure fonts.
     fig_smaller_sz = 13
-    fig_small_sz = 14
+    fig_small_sz = 19
     fig_med_sz = 15
-    fig_big_sz = 17
+    fig_big_sz = 22
     plt.rc("text", usetex=true)
     plt.rc("font", size=fig_small_sz, family="serif")
     plt.rc("axes", titlesize=fig_small_sz)

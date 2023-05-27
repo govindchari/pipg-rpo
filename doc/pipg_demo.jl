@@ -3,7 +3,7 @@ using PyPlot
 using Printf
 using IterativeSolvers
 
-include("set_fonts.jl")
+include("../ptr/utils/set_plot.jl")
 
 function proj_D(z, rc, rho)
     if (norm(z - rc) > rho)
@@ -48,8 +48,8 @@ function pipg(P, q, H, h, rc, r)
     for i = 1:20
         # Primal Update
         z = xi - a * (P * xi + q + H' * eta)
-        # append!(z1, z[1])
-        # append!(z2, z[2])
+        append!(z1, z[1])
+        append!(z2, z[2])
         z = proj_D(z, rc, r)
         append!(z1, z[1])
         append!(z2, z[2])
@@ -129,7 +129,7 @@ let
     xlim([-1.5, 1.5])
     ylim([-1.5, 1.5])
     title(string(iters) * " PIPG Iterates")
-    savefig("doc/img/actual_pipg_iterates.png")
+    savefig("img/pipg_iterates.png")
 
     figure(dpi=200)
     plot(w1, color="blue")
