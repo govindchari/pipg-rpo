@@ -19,7 +19,9 @@ a = 6793137;      % Reference semjax (m)
 n = sqrt(mu/a^3); % Mean motion (s^-1)
 
 
-[A, B] = dynamics(n, dt);
+% [A, B] = dynamics(n, dt);
+A = ones(nx);
+B = ones(nx, nu)
 
 % nx = 1;
 % nu = 1;
@@ -40,21 +42,36 @@ end
 Hleft = [-A;zeros((N-2)*nx, nx)];
 H2 = [Hleft,H2];
 
+Q = eye(3);
+R = eye(3);
+P = sparse(Q);
+for i = 2:N
+    P = blkdiag(P, sparse(Q));
+end
+for i = 1:N
+    P = blkdiag(P, sparse(R));
+end
+P = sparse(P);
+
 figure
 spy(H1)
 title("Sparsity Pattern of H", "Interpreter","latex", FontSize=32)
-set(gca,'XTick',[], 'YTick', [])
+% set(gca,'XTick',[], 'YTick', [])
+
+figure
+spy(P)
+title("Sparsity Pattern of P", "Interpreter","latex", FontSize=32)
+% set(gca,'XTick',[], 'YTick', [])
+
 
 % figure
 % spy(H2)
 
-[Q,R] = qr(H1',"econ");
-figure
-spy(Q')
-title("Sparsity Pattern of $Q^\top$", "Interpreter","latex", FontSize=32)
-set(gca,'XTick',[], 'YTick', [])
-
-
+% [Q,R] = qr(H1',"econ");
+% figure
+% spy(Q')
+% title("Sparsity Pattern of $Q^\top$", "Interpreter","latex", FontSize=32)
+% set(gca,'XTick',[], 'YTick', [])
 
 
 % norm(eig(H1'*H1)-eig(H2'*H2))

@@ -28,41 +28,38 @@
 \author{Govind Chari}
 \date{May 2023}
 \institute{Univeristy of Washington}
-\logo{\includegraphics[width=1.8cm]{img/seal_black.pdf}\hspace*{10cm}~\includegraphics[height=2cm]{img/ACL_logo.png}}
+% \logo{\includegraphics[width=1.8cm]{img/seal_black.pdf}\hspace*{10cm}~\includegraphics[height=2.5cm]{img/ACL_logo.png}}
 
 \begin{document}
 \begin{frame}
-    \titlepage
+\titlepage
+\begin{columns}
+\begin{column}[c]{0.5\linewidth}
+\begin{center}
+\includegraphics[width=1.8cm]{img/seal_black.pdf}
+\end{center}
+\end{column}
+\begin{column}[c]{0.5\linewidth}
+\begin{center}
+    \vspace{0.25cm}
+\includegraphics[height=2.5cm]{img/ACL_logo.png}    
+\end{center}
+\end{column}
+\end{columns}
 \end{frame}
 
 \logo{}
 
-% \begin{frame}{Solve Speed}
-%     \begin{center}
-%         \begin{figure}
-%             \includegraphics[width=8cm]{img/DQG_solve_time.pdf}
-%         \end{figure}
-%     \end{center}
-% \end{frame}
-
-\begin{frame}{To Do}
-    \begin{itemize}
-        \item Write conclusion
-        \item Rewrite customization
-        \item Fix logo locations in title
-    \end{itemize}
-\end{frame}
-
-
 \begin{frame}{PIPG Overview}
+    \textbf{PIPG}
     \begin{itemize}
-        \item First order primal-dual conic optimizer
-        \item Easily verifiable
-        \item Factorization free
-        \item Intuitive algorithm
+        \item Is a first order primal-dual conic optimizer
+        \item Is easily verifiable
+        \item Is factorization free
+        \item Is an intuitive algorithm
+        \item Is very fast (3-7x faster than ECOS)
         \item Can be coded in an afternoon
         \item Supports infeasibility detection
-        \item Very fast (3-7x faster than ECOS)
     \end{itemize}
 \end{frame}
 
@@ -151,54 +148,138 @@
         \end{column}
     \end{columns}
 \end{frame}
-\begin{frame}{Customization}
-    \framesubtitle{Exploiting Structure}
-    {\small%
-    \begin{columns}
-    \begin{column}[c]{0.4\textwidth}
-    \begin{center}
-    $\begin{aligned}
+\begin{frame}{Structured Sparsity}
+    \vspace{-0.8cm}
+    \begin{columns}[T]
+        \begin{column}{.55\textwidth}
+            \begin{fleqn}
+            \begin{equation*}
+            \begin{aligned}
+    \underset{x_t,u_t}{\operatorname{minimize}}~~~&~x_N^\top Q_N x_N+\sum_{t=1}^{N-1} x_t^\top Q_t x_t + u_t^\top R_t u_t\\
+    \operatorname{subject~to}~&~x_{t+1} = A_t x_t + B_tu_t, \\
+    &~x_t\in\mathbb{X}_t,~~u_t \in \mathbb{U}_t
+            \end{aligned}
+            \end{equation*}
+            \end{fleqn}
+            \includegraphics[width=7cm]{img/H_spy.jpg}
+    \end{column}
+        \begin{column}{.45\textwidth}
+            \begin{fleqn}
+            \begin{equation*}
+            \begin{aligned}
         \underset{z}{\operatorname{minimize}}~~~&~\frac{1}{2}z^\top P z \\
         \operatorname{subject~to}~&~Hz-h=0,~ z\in\mathbb{D}
-    \end{aligned}$
-    \vspace{1.8cm}
-    \uncover<3->{%
-    $\begin{aligned}
-        \rtx{w \gets {}}   & \rtx{v + \beta(Hz-h)}\\
-        \btx{z \gets {}}   & \btx{\Pi_{\mathbb{D}}[z - \alpha (Pz + H^\top w)]}\\
-        \rtx{v \gets {}}   & \rtx{v + \beta(Hz-h)}
-    \end{aligned}$}
-    \end{center}
-    \end{column}
-    \begin{column}{0.04\textwidth}
-    \begin{center}
-        \vspace{0.8cm}
-        \uncover<2->{$\rightarrow$}
-        \vspace{2.7cm}
-        \uncover<4->{$\rightarrow$}
-        \vspace{1cm}
-    \end{center}
-    \end{column}
-    \begin{column}[c]{0.55\textwidth}
-    \begin{center}
-    \uncover<2->{%
-    $\begin{aligned}
+            \end{aligned}
+            \end{equation*}
+            \end{fleqn}
+
+            \vspace{1.15cm}
+
+        \includegraphics[width=6cm]{img/P_spy.jpg}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Customization}
+
+    \vspace{-1cm}
+
+    \begin{columns}[T]
+        \begin{column}{0.6\textwidth}
+            \begin{equation*}
+                \begin{aligned}
         \underset{x_t,u_t}{\operatorname{minimize}}~~~&~x_N^\top Q_N x_N+\sum_{t=1}^{N-1} x_t^\top Q_t x_t + u_t^\top R_t u_t\\
         \operatorname{subject~to}~&~x_{t+1} = A_t x_t + B_tu_t, \\
-        &~x_t\in\mathbb{X},~~u_t \in \mathbb{U}
-    \end{aligned}$}
-    \vspace{1cm}
-    \uncover<4>{%
-    $\begin{aligned}
-        \rtx{w_t \gets {}} & \rtx{v_t+\beta (x_{t+1}-A_tx_{t}-B_tu_{t})} \\
-        \btx{u_{t} \gets {}} & \btx{\Pi_{\mathbb{U}} [u_{t}-\alpha(R_tu_{t}-B_t^\top w_{t-1})]}\\
-        \btx{x_t \gets {}} & \btx{\Pi_{\mathbb{X}}[x_t-\alpha(Q_tx_t+ w_{t-1}-A_t^\top w_{t})]}\\
-        \rtx{v_t \gets {}} & \rtx{v_t +\beta (x_{t+1}-A_tx_{t}-B_tu_{t})}
-    \end{aligned}$}
-    \end{center}
+        &~x_t\in\mathbb{X}_t,~~u_t \in \mathbb{U}_t
+                \end{aligned}
+                \end{equation*}  
+                
+                \vspace{1cm}
+
+            $\begin{aligned}
+                \rtx{w_t \gets {}} & \rtx{v_t+\beta (x_{t+1}-A_tx_{t}-B_tu_{t})} \\
+                \btx{u_{t} \gets {}} & \btx{\Pi_{\mathbb{U}_t} [u_{t}-\alpha(R_tu_{t}-B_t^\top w_{t-1})]}\\
+                \btx{x_t \gets {}} & \btx{\Pi_{\mathbb{X}_t}[x_t-\alpha(Q_tx_t+ w_{t-1}-A_t^\top w_{t})]}\\
+                \rtx{v_t \gets {}} & \rtx{v_t +\beta (x_{t+1}-A_tx_{t}-B_tu_{t})}
+            \end{aligned}$        
+        \end{column}
+        \begin{column}{0.4\textwidth}
+            \begin{equation*}
+                \begin{aligned}
+            \underset{z}{\operatorname{minimize}}~~~&~\frac{1}{2}z^\top P z \\
+            \operatorname{subject~to}~&~Hz-h=0,~ z\in\mathbb{D}
+                \end{aligned}
+                \end{equation*}
+                
+                \vspace{2cm}
+
+            $\begin{aligned}
+                \rtx{w \gets {}}   & \rtx{v + \beta(Hz-h)}\\
+                \btx{z \gets {}}   & \btx{\Pi_{\mathbb{D}}[z - \alpha (Pz + H^\top w)]}\\
+                \rtx{v \gets {}}   & \rtx{v + \beta(Hz-h)}            
+            \end{aligned}$
     \end{column}
-    \end{columns}}
+    \end{columns}
 \end{frame}
+
+\begin{frame}{Parsing}
+    \begin{figure}
+        \includegraphics[width=0.90\textwidth]{img/bar_lqr_N30.pdf}
+    \end{figure}
+
+\vspace{0.25cm} 
+
+{\footnotesize \color{gray} From Elango et al. \emph{SciTech 2021}}    
+\end{frame}
+
+% \begin{frame}{Customization}
+%     \framesubtitle{Exploiting Structure}
+%     {\small%
+%     \begin{columns}
+%     \begin{column}[c]{0.4\textwidth}
+%     \begin{center}
+%     $\begin{aligned}
+%         \underset{z}{\operatorname{minimize}}~~~&~\frac{1}{2}z^\top P z \\
+%         \operatorname{subject~to}~&~Hz-h=0,~ z\in\mathbb{D}
+%     \end{aligned}$
+%     \vspace{1.8cm}
+%     \uncover<3->{%
+%     $\begin{aligned}
+%         \rtx{w \gets {}}   & \rtx{v + \beta(Hz-h)}\\
+%         \btx{z \gets {}}   & \btx{\Pi_{\mathbb{D}}[z - \alpha (Pz + H^\top w)]}\\
+%         \rtx{v \gets {}}   & \rtx{v + \beta(Hz-h)}
+%     \end{aligned}$}
+%     \end{center}
+%     \end{column}
+%     \begin{column}{0.04\textwidth}
+%     \begin{center}
+%         \vspace{0.8cm}
+%         \uncover<2->{$\rightarrow$}
+%         \vspace{2.7cm}
+%         \uncover<4->{$\rightarrow$}
+%         \vspace{1cm}
+%     \end{center}
+%     \end{column}
+%     \begin{column}[c]{0.55\textwidth}
+%     \begin{center}
+%     \uncover<2->{%
+%     $\begin{aligned}
+%         \underset{x_t,u_t}{\operatorname{minimize}}~~~&~x_N^\top Q_N x_N+\sum_{t=1}^{N-1} x_t^\top Q_t x_t + u_t^\top R_t u_t\\
+%         \operatorname{subject~to}~&~x_{t+1} = A_t x_t + B_tu_t, \\
+%         &~x_t\in\mathbb{X},~~u_t \in \mathbb{U}
+%     \end{aligned}$}
+%     \vspace{1cm}
+%     \uncover<4>{%
+%     $\begin{aligned}
+%         \rtx{w_t \gets {}} & \rtx{v_t+\beta (x_{t+1}-A_tx_{t}-B_tu_{t})} \\
+%         \btx{u_{t} \gets {}} & \btx{\Pi_{\mathbb{U}} [u_{t}-\alpha(R_tu_{t}-B_t^\top w_{t-1})]}\\
+%         \btx{x_t \gets {}} & \btx{\Pi_{\mathbb{X}}[x_t-\alpha(Q_tx_t+ w_{t-1}-A_t^\top w_{t})]}\\
+%         \rtx{v_t \gets {}} & \rtx{v_t +\beta (x_{t+1}-A_tx_{t}-B_tu_{t})}
+%     \end{aligned}$}
+%     \end{center}
+%     \end{column}
+%     \end{columns}}
+% \end{frame}
 
 \begin{frame}{Continuous-time Nonconvex Problem}
     \begin{equation*}
@@ -282,7 +363,7 @@
     \begin{columns}[T]
         \begin{column}{.6\textwidth}
             \includegraphics[width=\linewidth]{img/solve_speed.png}\begin{center}
-                {200 runs 3ms bins}
+                {200 runs, 3 millisecond bins}
             \end{center}
         \end{column}
         \begin{column}{.4\textwidth}
@@ -305,11 +386,17 @@
             
             PIPG is \textcolor{red}{6.25x} faster even without customization
 
-      
         \end{column}
     \end{columns}
 \end{frame}
-\begin{frame}{Conclusion}
+\begin{frame}{Summary}
+    \textbf{PIPG}
+    \begin{itemize}
+        \item Is easy to understand
+        \item Is easy to verify
+        \item Is easy to implement
+        \item Is faster than ECOS
+    \end{itemize}
     
 \end{frame}
 
