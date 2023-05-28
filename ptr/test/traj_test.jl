@@ -10,24 +10,26 @@ include("../src/solver.jl")
 include("../src/subproblem.jl")
 include("../src/pipg.jl")
 
-K = 15
-n = 0.00113
-x0 = [200.0; 1000.0; 200.0; 0.0; 0.0; 0.0]
-xT = zeros(6)
-σmax = 300.0
-σmin = 100.0
-umax = 0.1
-vmax = 0.5
-rc = [0.0; 300.0; 0.0]
-rho = 250.0
-nx = 6
-nu = 3
+K = 15              # Number of nodes
+n = 0.00113         # Mean Motion
+
+x0 = [200.0; 1000.0; 200.0; 0.0; 0.0; 0.0] # Initial Condition [r v] [m ms^-1]
+xT = zeros(6)       # Terminal condition [r v] [m ms^-1]
+σmax = 300.0        # Dilation upper bound [s]
+σmin = 100.0        # Dilation lower bound [s]
+umax = 0.1          # Max dv [m s^-1]
+vmax = 0.5          # Max speed [m s^-1]
+rc = [0.0; 300.0; 0.0] # Keepout zone center [m]
+rho = 250.0         # Keepout zone radius [m]
+nx = 6              # Number of states
+nu = 3              # Number of controls
 
 # Scaling Matrices
-Pu = umax * I(3)
-Px = Diagonal([abs.(x0[1:3]); vmax; vmax; vmax])
-Pσ = σmax
+Px = Diagonal([abs.(x0[1:3]); vmax; vmax; vmax]) # State scaling matrix
+Pu = umax * I(3)    # Control scaling Matrix
+Pσ = σmax           # Dilation scaling factor
 
+# Construct problem parameter struct
 par = PARAMS(n, x0, xT, umax, vmax, σmin, σmax, rc, rho, Px, Pu, Pσ)
 
 # Solve with ECOS
@@ -38,6 +40,7 @@ time_ecos, zecos = solveTraj!(pecos, :ecos, true)
 ppipg = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
 time_pipg, zpipg = solveTraj!(ppipg, :pipg, true)
 
+# Print solve time stats
 println("ECOS Time: ", sum(time_ecos))
 println("PIPG Time: ", sum(time_pipg))
 println("Performance: ", sum(time_ecos) / sum(time_pipg))
@@ -50,9 +53,6 @@ if acc > 1.0
     println("####################")
 end
 
-# figure(dpi=200)
-# plot(time_ecos)
-# plot(time_pipg)
-
+# Plot PIPG Trajectory
 plot_all(ppipg)
 

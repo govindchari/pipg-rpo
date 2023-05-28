@@ -142,11 +142,11 @@ function proj_inter_halfspaces!(c, u1::Vector{Float64}, u2::Vector{Float64}, eta
         nu1 = case1 / den
         nu2 = case2 / den
     elseif a2 > eta2 && a1 - eta1 <= b * (a2 - eta2)
-        # nu1 = 0.0
+        nu1 = 0.0
         nu2 = a2 - eta2
     else
         nu1 = a1 - eta1
-        # nu2 = 0.0
+        nu2 = 0.0
     end
     @. c = c - nu1 * u1 - nu2 * u2
     # end
