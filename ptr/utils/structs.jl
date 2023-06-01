@@ -62,7 +62,7 @@ mutable struct ptr
     Nsub::Int64   # Number of integration subintervals for discretization
     wtr::Float64   # Weight on trust region
     wvc::Float64  # Virtual control weight
-    wvb::Float64  # Virtual control weight
+    wvb::Float64  # Virtual buffer weight
 
     # Dynamics and Jacobians
     f::Function   # CT Dynamics

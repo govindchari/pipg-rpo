@@ -180,7 +180,46 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Customization}
+\begin{frame}{Customization: Structure Exploitation}
+    \begin{columns}[T]
+        \begin{column}{.5\textwidth}
+            $\underbrace{\begin{bmatrix}
+                A_{1} & & \\
+                & \ddots & \\
+                & & A_{K}
+              \end{bmatrix}}_{\text{H}}
+              \underbrace{
+              \begin{bmatrix}
+                x_{1}\\
+                \vdots\\
+                x_{K}
+              \end{bmatrix}}_{\text{z}} = 
+              \underbrace{
+              \begin{bmatrix}
+                A_{1}x_{1}\\
+                \vdots\\
+                A_{K}x_{K}
+              \end{bmatrix}}_{\text{y}}$
+
+              \vspace{0.5cm}
+
+
+              We can compute $y=Hz$ subvector by subvector ($y_i = A_iz_i$) without constructing H and without using sparse-matrix vector multiplication.
+            \end{column}
+        \begin{column}{.5\textwidth}
+            % \includegraphics[width=0.75\textwidth]{img/customized.png}
+            \includegraphics[width=\textwidth]{img/customized_speedup.png}
+
+            \vspace{0.5cm}
+
+            \begin{center}
+                Customization can double structured matrix vector multiplication speed.
+            \end{center}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Customization: PIPG}
 
     \vspace{-1cm}
 
