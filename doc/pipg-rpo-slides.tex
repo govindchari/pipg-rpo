@@ -27,7 +27,7 @@
 \title{PIPG for Rendezvous}
 \author{Govind Chari}
 \date{May 2023}
-\institute{Univeristy of Washington}
+\institute{University of Washington}
 % \logo{\includegraphics[width=1.8cm]{img/seal_black.pdf}\hspace*{10cm}~\includegraphics[height=2.5cm]{img/ACL_logo.png}}
 
 \begin{document}
@@ -51,14 +51,14 @@
 \logo{}
 
 \begin{frame}{PIPG Overview}
-    \textbf{PIPG}
+    \textbf{PIPG} is
     \begin{itemize}
-        \item Is a first order primal-dual conic optimizer
-        \item Is easily verifiable
-        \item Is factorization free
-        \item Is an intuitive algorithm
-        \item Is very fast (3-7x faster than ECOS)
-        \item Can be coded in an afternoon
+        \item A first order primal-dual conic optimizer
+        \item Easily verifiable
+        \item Factorization free
+        \item Intuitive
+        \item Very fast (3-7x faster than ECOS)
+        \item Codable in an afternoon
         \item Supports infeasibility detection
     \end{itemize}
 \end{frame}
@@ -121,21 +121,21 @@
     \end{columns}
 \end{frame}
 
-\begin{frame}{Infeasibility Detection - Dual Infeasibility}
-    Dual Infeasibility Criteria: 
+% \begin{frame}{Infeasibility Detection - Dual Infeasibility}
+%     Dual Infeasibility Criteria: 
     
-    \[\lim_{k\to\infty} \|z^{k+1}-z^k\| \neq 0\]
-    \begin{columns}[T]
-        \begin{column}{.5\textwidth}
-            \includegraphics[width=7cm]{img/dual_infeas_pipg_iters.png}
-        \end{column}
-        \begin{column}{.5\textwidth}
-            \includegraphics[width=7cm]{img/dual_infeas_prim_iters.png}
-        \end{column}
-    \end{columns}
-\end{frame}
+%     \[\lim_{k\to\infty} \|z^{k+1}-z^k\| \neq 0\]
+%     \begin{columns}[T]
+%         \begin{column}{.5\textwidth}
+%             \includegraphics[width=7cm]{img/dual_infeas_pipg_iters.png}
+%         \end{column}
+%         \begin{column}{.5\textwidth}
+%             \includegraphics[width=7cm]{img/dual_infeas_prim_iters.png}
+%         \end{column}
+%     \end{columns}
+% \end{frame}
 
-\begin{frame}{Infeasibility Detection - Primal Infeasibility}
+\begin{frame}{Infeasibility Detection}
     Primal Infeasibility Criteria: 
     
     \[\lim_{k\to\infty} \|w^{k+1}-w^k\| \neq 0\]
@@ -268,7 +268,7 @@
 
 \vspace{0.25cm} 
 
-{\footnotesize \color{gray} From Elango et al. \emph{SciTech 2021}}    
+{\footnotesize \color{gray} From Elango et al. \emph{SciTech 2022}}    
 \end{frame}
 
 % \begin{frame}{Customization}
@@ -343,8 +343,9 @@
             \end{aligned}
         \end{equation*}
 \end{frame}
-\begin{frame}{Successive Convex Programming (SCP)}
+\begin{frame}{Sequential Convex Programming (SCP)}
     \includegraphics[width=\linewidth]{img/scp_block_diagram_csm.png}
+    {\footnotesize \color{gray} From Malyuta et al. \emph{IEEE CSM 2022}}    
 \end{frame}
 \begin{frame}{Discrete-time Convex Subproblem}
     \begin{center}
@@ -431,12 +432,12 @@
 \begin{frame}{Summary}
     \begin{columns}[T]
         \begin{column}{0.35\textwidth}
-            \textbf{PIPG}
+            \textbf{PIPG} is
             \begin{itemize}
-                \item Is easy to understand
-                \item Is easy to verify
-                \item Is easy to implement
-                \item Is faster than ECOS
+                \item Easy to understand
+                \item Easy to verify
+                \item Easy to implement
+                \item Faster than ECOS
             \end{itemize}        
         \end{column}
         \begin{column}{0.65\textwidth}
