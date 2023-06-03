@@ -26,7 +26,7 @@
 
 \title{PIPG for Rendezvous}
 \author{Govind Chari}
-\date{May 2023}
+\date{June 2023}
 \institute{University of Washington}
 % \logo{\includegraphics[width=1.8cm]{img/seal_black.pdf}\hspace*{10cm}~\includegraphics[height=2.5cm]{img/ACL_logo.png}}
 
@@ -57,6 +57,7 @@
         \item Easily verifiable
         \item Factorization free
         \item Intuitive
+        \item Warmstartable
         \item Very fast (3-7x faster than ECOS)
         \item Codable in an afternoon
         \item Supports infeasibility detection
@@ -69,6 +70,7 @@
             \hline
               & ECOS & PIPG \\
             \hline
+            Warm Startable   & \xmark    &\cmark\\
             Verification Ease   & \xmark    &\cmark\\
             Factorization Free&   \xmark  & \cmark\\
             Understandable &   \xmark  & \cmark\\
@@ -364,11 +366,11 @@
             \fbox{\text{Max Speed}}
             &&& \|v_k\|_2 \leq v_{\mathrm{max}} \\
             \fbox{\text{Initial Conditions}}
-            &&& {r}(0) = {r}_i \\
-            &&& {v}(0) = {v}_i \\
+            &&& {r}(1) = {r}_i \\
+            &&& {v}(1) = {v}_i \\
             \fbox{\text{Terminal Conditions}}
-            &&& {r}(t_f) = {0}_{3 \times 1} \\
-            &&& {v}(t_f) = {0}_{3 \times 1} \\
+            &&& {r}(K) = {0}_{3 \times 1} \\
+            &&& {v}(K) = {0}_{3 \times 1} \\
             \end{aligned}$}
 
         \end{center}

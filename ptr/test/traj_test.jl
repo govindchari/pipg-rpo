@@ -3,6 +3,7 @@ using LinearAlgebra, BenchmarkTools
 include("../utils/structs.jl")
 include("../utils/discretize.jl")
 include("../utils/plotting.jl")
+include("../utils/propagation.jl")
 
 include("../src/initialize.jl")
 include("../src/dynamics.jl")
@@ -53,6 +54,11 @@ if acc > 1.0
     println("####################")
 end
 
-# Plot PIPG Trajectory
-plot_all(ppipg)
+# # Plot PIPG Trajectory
+Z = single_shot(pecos, 500)
+figure(dpi=200)
+plot(pecos.xref[1, :], pecos.xref[2, :])
+plot(Z[1, :], Z[2, :])
+show()
+plot_all(ppipg, Z)
 
