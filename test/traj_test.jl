@@ -1,4 +1,4 @@
-using LinearAlgebra, BenchmarkTools
+using LinearAlgebra
 
 include("../utils/structs.jl")
 include("../utils/discretize.jl")
@@ -62,4 +62,3 @@ println("ECOS Single Shooting Error: ", norm(Zecos[1:3,end]))
 println("PIPG Single Shooting Error: ", norm(Zpipg[1:3,end]))
 
 # plot_all(ppipg, Z)
-

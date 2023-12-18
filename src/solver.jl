@@ -30,6 +30,7 @@ function solveTraj!(p::ptr, slvr::Symbol, verbose::Bool)
             log(k, p, pipg_iter)
         end
         p.converged = (norm(reshape(p.vc, (p.nx * (p.K - 1), 1)), 1) <= p.vc_tol) && (p.Δ <= p.tr_tol) && (sum(p.vb) <= p.vb_tol)
+        p.iters = k
         if (p.converged)
             break
         end

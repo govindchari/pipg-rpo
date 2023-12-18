@@ -1,4 +1,4 @@
-using SparseArrays, IterativeSolvers
+using SparseArrays
 
 struct PIPG_OPTS
     omega::Float64
@@ -12,7 +12,7 @@ struct PIPG_OPTS
     function PIPG_OPTS()
         omega = 375.0
         rho = 1.65
-        max_iters = 50
+        max_iters = 100
         check_iter = 1
         eps_abs_pow = 1e-3
         eps_rel_pow = 1e-3
@@ -219,7 +219,7 @@ function package_solution(p::ptr, xi::Vector{Float64}, eta::Vector{Float64})
     vb = xi[p.nu*(p.K-1)+(p.K-1)+p.nx*(p.nu*p.K-2)+1:end]
 
     p.Δ = sqrt(norm((x - (p.par.Px\p.xref)[:]))^2 + norm((u - (p.par.Pu\p.uref)[:]))^2)
-    p.Δσ = norm(σ - p.σref / par.Pσ)
+    p.Δσ = norm(σ - p.σref / p.par.Pσ)
     p.xref .= p.par.Px * reshape(x, (6, K))
     p.uref .= p.par.Pu * reshape(u, (3, K))
     p.σref .= p.par.Pσ * I(p.K - 1) * σ
