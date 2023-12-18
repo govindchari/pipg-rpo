@@ -64,6 +64,12 @@ mutable struct ptr
     wvc::Float64  # Virtual control weight
     wvb::Float64  # Virtual buffer weight
 
+    # PTR Stopping Criteria
+    tr_tol::Float64
+    vc_tol::Float64
+    vb_tol::Float64
+    max_iter::Int64
+
     # Dynamics and Jacobians
     f::Function   # CT Dynamics
     dfx::Function # State Jacobian
@@ -109,6 +115,12 @@ mutable struct ptr
     wws::Vector{Float64}
     ws::Bool
 
+    # Iterations
+    iters::Int64
+
+    # Convergence flag
+    converged::Bool
+
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
         # wtr = 1
@@ -117,6 +129,10 @@ mutable struct ptr
         wtr = 0.2
         wvc = 13.0
         wvb = 0.1
+        tr_tol = 1e-3
+        vc_tol = 1e-6
+        vb_tol = 1e-6
+        max_iter = 50
 
         if (disc != :foh && disc != :impulsive)
             throw(ArgumentError("disc must be :foh or :impulsive"))
@@ -134,6 +150,6 @@ mutable struct ptr
             dτ = 1.0
         end
 
-        new(nx, nu, K, dτ, Nsub, wtr, wvc, wvb, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K - 1), zeros(K), 0.0, 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation, zeros(nx * (3 * K - 2) + nu * (K - 1) + (2 * K - 1)), zeros(nx * (K - 1)), false)
+        new(nx, nu, K, dτ, Nsub, wtr, wvc, wvb, tr_tol, vc_tol, vb_tol, max_iter, f, dfx, dfu, zeros(nx, K), zeros(nu, K), σref, zeros(nx, K + (K - 1) * (Nsub - 1)), zeros(nx, K - 1), zeros(K), 0.0, 0.0, IDX(nx, nu), zeros(nx, K - 1), zeros(K - 1), zeros(nx, nx, K - 1), zeros(nx, nu, K - 1), zeros(nx, nu, K - 1), zeros(nx, K - 1), zeros(nx, K - 1), par, disc, dilation, zeros(nx * (3 * K - 2) + nu * (K - 1) + (2 * K - 1)), zeros(nx * (K - 1)), false)
     end
 end

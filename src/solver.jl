@@ -15,7 +15,7 @@ function solveTraj!(p::ptr, slvr::Symbol, verbose::Bool)
     time = []
     pipg_iter = 0
     z = zeros(p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (2 * p.K - 1))
-    @inbounds for k = 1:20
+    @inbounds for k = 1:p.max_iter
         discretize!(p)
         P, q, H, h = vectorize(p)
         if slvr == :ecos
@@ -28,6 +28,10 @@ function solveTraj!(p::ptr, slvr::Symbol, verbose::Bool)
         append!(time, t)
         if verbose
             log(k, p, pipg_iter)
+        end
+        p.converged = (norm(reshape(p.vc, (p.nx * (p.K - 1), 1)), 1) <= p.vc_tol) && (p.Δ <= p.tr_tol) && (sum(p.vb) <= p.vb_tol)
+        if (p.converged)
+            break
         end
     end
     return time, z
