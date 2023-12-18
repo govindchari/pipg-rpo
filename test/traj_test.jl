@@ -55,10 +55,19 @@ if acc > 1.0
 end
 
 # # Plot PIPG Trajectory
-Z = single_shot(pecos, 500)
-figure(dpi=200)
+Zecos= single_shot(pecos, 1000)
+Zpipg = single_shot(ppipg, 1000)
+# figure(dpi=200)
 plot(pecos.xref[1, :], pecos.xref[2, :])
-plot(Z[1, :], Z[2, :])
-show()
-plot_all(ppipg, Z)
+plot(pecos.xprop[1, :], pecos.xprop[2, :])
+plot(Zecos[1, :], Zecos[2, :])
+
+# plot(ppipg.xref[1, :], ppipg.xref[2, :])
+# plot(Z[1, :], Z[2, :])
+# show()
+println(pecos.def)
+println(norm(Zecos[1:3,end]))
+println(norm(Zpipg[1:3,end]))
+
+# plot_all(ppipg, Z)
 

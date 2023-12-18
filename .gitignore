@@ -8,3 +8,4 @@
 *.snm
 *.fdb_latexmk
 *.aux
+.vscode/

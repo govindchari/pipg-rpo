@@ -239,12 +239,12 @@ function pipg_vec_solve!(p::ptr, opts::PIPG_OPTS, c::CACHE, P, q, H, h)
         xi = p.zws
         eta = p.wws
 
-        @inbounds for k = 1:opts.max_iters
+        for k = 1:opts.max_iters
             z = xi - a * (P * xi + q + H' * eta)
             project_D!(p, z, c)
             w = eta + b * (H * (2 * z - xi) - h)
-            xi .= (1 - opts.rho) .* xi .+ opts.rho .* z
-            eta = (1 - opts.rho) .* eta .+ opts.rho .* w
+            xi = (1 - opts.rho) * xi + opts.rho .* z
+            eta = (1 - opts.rho) * eta + opts.rho .* w
         end
     end
     return xi, eta, opts.max_iters, t
