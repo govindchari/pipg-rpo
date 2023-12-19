@@ -2,7 +2,7 @@ using  JLD2, PyPlot, LinearAlgebra, UnPack
 include("../utils/set_plot.jl")
 
 rc = [0.0; 300.0; 0.0] # Keepout zone center [m]
-rho = 250.0         # Keepout zone radius [m]
+rho = 200.0         # Keepout zone radius [m]
 umax = 0.1          # Maximum delta V [m/sec]
 
 file = jldopen("test/data/mc_data.jld2")
@@ -26,6 +26,8 @@ z = rc[3] .+ rho * (ones(n) * cos.(v)')
 for i = 1 : Nmc
     if (converged_pipg[i])
         plot3D(traj_pipg[i, 1, :], traj_pipg[i, 2, :], traj_pipg[i, 3, :])
+    else
+        scatter3D(x0_list[i,1], x0_list[i,2], x0_list[i,3], marker="*", color="red")
     end
 end
 surf(x, y, z, rstride=4, cstride=4, color="red", alpha=0.7)

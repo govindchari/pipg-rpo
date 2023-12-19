@@ -15,16 +15,16 @@ include("../src/pipg.jl")
 K = 15              # Number of nodes
 n = 0.00113         # Mean Motion
 Nsim = 500          # Number of simulation nodes
-Nmc = 64
+Nmc = 1
 
-x0_nom = [200.0; 1000.0; 200.0; 0.0; 0.0; 0.0] # Initial Condition [r v] [m ms^-1]
+x0_nom = [150.0; 1000.0; 200.0; 0.0; 0.0; 0.0] # Initial Condition [r v] [m ms^-1]
 xT = zeros(6)       # Terminal condition [r v] [m ms^-1]
 σmax = 300.0        # Dilation upper bound [s]
 σmin = 100.0        # Dilation lower bound [s]
 umax = 0.1          # Max dv [m s^-1]
 vmax = 0.5          # Max speed [m s^-1]
 rc = [0.0; 300.0; 0.0] # Keepout zone center [m]
-rho = 250.0         # Keepout zone radius [m]
+rho = 200.0         # Keepout zone radius [m]
 nx = 6              # Number of states
 nu = 3              # Number of controls
 
@@ -61,21 +61,21 @@ rng = MersenneTwister(1234);
 
 for i = 1 : Nmc
     # Construct problem parameter struct
-    x0 = x0_nom + 1e-1 * randn(rng, nx)
+    x0 = x0_nom + [25 * randn(rng, 3); 0 * randn(rng, 3)]
     x0_list[i,:] = x0
     par = PARAMS(n, x0, xT, umax, vmax, σmin, σmax, rc, rho, Px, Pu, Pσ)
 
     # Solve with ECOS
-    # pecos = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
-    # t_ecos, zecos = solveTraj!(pecos, :ecos, true)
-    # Zecos = single_shot(pecos, Nsim)
-    # traj_ecos[i, :, :] = Zecos
-    # u_ecos[i, :, :] = pecos.uref
-    # σ_ecos[i,:] = pecos.σref
-    # iters_ecos[i] = pecos.iters
-    # error_ecos[i] = norm(Zecos[1:3, end])
-    # time_ecos[i] = sum(t_ecos)
-    # converged_ecos[i] = pecos.converged
+    pecos = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
+    t_ecos, zecos = solveTraj!(pecos, :ecos, true)
+    Zecos = single_shot(pecos, Nsim)
+    traj_ecos[i, :, :] = Zecos
+    u_ecos[i, :, :] = pecos.uref
+    σ_ecos[i,:] = pecos.σref
+    iters_ecos[i] = pecos.iters
+    error_ecos[i] = norm(Zecos[1:3, end])
+    time_ecos[i] = sum(t_ecos)
+    converged_ecos[i] = pecos.converged
 
     # Solve with PIPG
     ppipg = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
@@ -89,7 +89,7 @@ for i = 1 : Nmc
     time_pipg[i] = sum(t_pipg)
     converged_pipg[i] = ppipg.converged
 end
-jldsave("test/data/mc_data.jld2"; traj_pipg, u_pipg, σ_pipg, iters_pipg, error_pipg, time_pipg, converged_pipg, x0_list)
+jldsave("test/data/mc_data.jld2"; traj_ecos, u_ecos, σ_ecos, iters_ecos, error_ecos, time_ecos, converged_ecos, traj_pipg, u_pipg, σ_pipg, iters_pipg, error_pipg, time_pipg, converged_pipg, x0_list)
 
 # # Print solve time stats
 # println("ECOS Time: ", sum(time_ecos))
@@ -105,3 +105,4 @@ jldsave("test/data/mc_data.jld2"; traj_pipg, u_pipg, σ_pipg, iters_pipg, error_
 # end
 
 println("PIPG Percent Converged: ", 100 * sum(converged_pipg) / Nmc)
+println("ECOS Percent Converged: ", 100 * sum(converged_ecos) / Nmc)

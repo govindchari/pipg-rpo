@@ -123,16 +123,13 @@ mutable struct ptr
 
     function ptr(nx::Int64, nu::Int64, K::Int64, f::Function, dfx::Function, dfu::Function, par::PARAMS, disc::Symbol, dilation::Symbol)
         Nsub = 10
-        # wtr = 1
-        # wvc = 1e2
-        # wvb = 1
-        wtr = 0.2
+        wtr = 0.005
         wvc = 13.0
-        wvb = 0.1
+        wvb = 0.001
         tr_tol = 1e-3
         vc_tol = 1e-6
         vb_tol = 1e-6
-        max_iter = 50
+        max_iter = 30
 
         if (disc != :foh && disc != :impulsive)
             throw(ArgumentError("disc must be :foh or :impulsive"))

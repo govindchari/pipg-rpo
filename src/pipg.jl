@@ -12,7 +12,7 @@ struct PIPG_OPTS
     function PIPG_OPTS()
         omega = 375.0
         rho = 1.65
-        max_iters = 100
+        max_iters = 50
         check_iter = 1
         eps_abs_pow = 1e-3
         eps_rel_pow = 1e-3

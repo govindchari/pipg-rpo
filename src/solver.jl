@@ -15,7 +15,7 @@ function solveTraj!(p::ptr, slvr::Symbol, verbose::Bool)
     time = []
     pipg_iter = 0
     z = zeros(p.nx * (3 * p.K - 2) + p.nu * (p.K - 1) + (2 * p.K - 1))
-    @inbounds for k = 1:p.max_iter
+    for k = 1:p.max_iter
         discretize!(p)
         P, q, H, h = vectorize(p)
         if slvr == :ecos
