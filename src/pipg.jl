@@ -12,7 +12,7 @@ struct PIPG_OPTS
     function PIPG_OPTS()
         omega = 375.0
         rho = 1.65
-        max_iters = 50
+        max_iters = 100
         check_iter = 1
         eps_abs_pow = 1e-3
         eps_rel_pow = 1e-3
@@ -187,8 +187,9 @@ function project_D!(p::ptr, z::Vector{Float64}, c::CACHE)
     end
 
     # Control Constraint
-    @inbounds @simd for k = 1:p.K
-        idx_u = (p.nx*K)+p.nu*(k-1)+1:(p.nx*K)+p.nu*k
+    shift = p.nx*K
+    @inbounds @simd for k = 1:p.K - 1
+        idx_u = shift+p.nu*(k-1)+1:shift+p.nu*k
         proj_ball!((@view z[idx_u]), umax_sc)
     end
     # L1 Norm Reformulation for virtual control
