@@ -24,10 +24,10 @@ function discretize!(p::ptr)
         p.def[k] = norm(z[idx.x] - p.xref[:, k+1])
         Ak = reshape(z[idx.phi], (p.nx, p.nx))
         p.A[:, :, k] .= Ak
-        p.Bm[:, :, k] .= Ak * reshape(z[idx.Bm], (p.nx, p.nu))
-        p.Bp[:, :, k] .= Ak * reshape(z[idx.Bp], (p.nx, p.nu))
-        p.S[:, k] .= Ak * z[idx.S]
-        p.z[:, k] .= Ak * z[idx.z]
+        p.Bm[:, :, k] .= reshape(z[idx.Bm], (p.nx, p.nu))
+        p.Bp[:, :, k] .= reshape(z[idx.Bp], (p.nx, p.nu))
+        p.S[:, k] .= z[idx.S]
+        p.z[:, k] .= z[idx.z]
     end
 end
 function df(τ::Float64, P::Array{Float64,1}, p::ptr)
@@ -59,10 +59,10 @@ function df(τ::Float64, P::Array{Float64,1}, p::ptr)
     end
     A, B, S, z = getCTMatrices(τ, Px, u, p)
     dP[idx.phi] = reshape(A * Pphi_mat, (p.nx^2, 1))
-    dP[idx.Bm] = reshape(F \ (lm * B), (p.nx * p.nu, 1))
-    dP[idx.Bp] = reshape(F \ (lp * B), (p.nx * p.nu, 1))
-    dP[idx.S] = F \ S
-    dP[idx.z] = F \ z
+    dP[idx.Bm] = reshape(A * reshape(P[idx.Bp], p.nx, p.nu) + (lm * B), (p.nx * p.nu, 1))
+    dP[idx.Bp] = reshape(A * reshape(P[idx.Bm], p.nx, p.nu) + (lp * B), (p.nx * p.nu, 1))
+    dP[idx.S] = A * P[idx.S] + S
+    dP[idx.z] = A * P[idx.z] + z
 
     return dP
 end
