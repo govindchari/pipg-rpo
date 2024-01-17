@@ -47,8 +47,8 @@ function solveSubproblemVectorizedJuMP!(p::ptr, P, q, H, h)
     for k = 1:p.K-1
         @constraint(model, [p.par.umax / maximum(diag(p.par.Pu)); z[shift+3*(k-1)+1:shift+3*(k)]]  in SecondOrderCone())
     end
-    set_optimizer_attribute(model, "abstol", 1e-9)
-    set_optimizer_attribute(model, "reltol", 1e-9)
+    set_optimizer_attribute(model, "abstol", 5e-9)
+    set_optimizer_attribute(model, "reltol", 5e-9)
 
     optimize!(model)
     t = solve_time(model)

@@ -1,8 +1,15 @@
-using PyPlot, JLD2, Statistics
+using PyPlot, JLD2, Statistics, UnPack
+
 include("../utils/set_plot.jl")
 
-ecos = load_object("data/ecos_times.jld2")
-pipg = load_object("data/pipg_times.jld2")
+file = jldopen("test/data/ecos_times.jld2")
+@unpack ecos = file
+close(file)
+
+file = jldopen("test/data/pipg_times.jld2")
+@unpack pipg = file
+close(file)
+
 ecos *= 1000
 pipg *= 1000
 
@@ -29,14 +36,12 @@ pygui(true)
 figure(dpi=200)
 set_fonts()
 set_fonts()
-count, bin_ecos = hist(ecos, 80, label="ECOS", color="mediumseagreen")
+count, bin_ecos = hist(ecos, label="ECOS", bins=17, color="mediumseagreen")
 count, bin_pipg = hist(pipg, label="PIPG", color="coral")
-xlim(0, 350)
-title("Solve Time Histogram")
+xlim(0, 200)
 xlabel("Solve Time (ms)")
 ylabel("Frequency")
 legend()
-grid()
-savefig("../../doc/img/solve_speed.png")
+savefig("test/data/solve_speed.pdf")
 
 show()

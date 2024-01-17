@@ -55,8 +55,8 @@ if acc > 1.0
 end
 
 # Plot PIPG Trajectory
-Zecos= single_shot(pecos, 1000)
-Zpipg = single_shot(ppipg, 1000)
+Zecos, tecos = single_shot(pecos, 1000)
+Zpipg, tpipg = single_shot(ppipg, 1000)
 
 figure(dpi=200)
 n = 100
@@ -87,5 +87,5 @@ println("PIPG Single Shooting Position Error: ", norm(Zpipg[1:3,end]))
 println("ECOS Single Shooting Velocity Error: ", norm(Zecos[4:6,end]))
 println("PIPG Single Shooting Velocity Error: ", norm(Zpipg[4:6,end]))
 
-# plot_all(ppipg, Zpipg)
+plot_all(ppipg, Zpipg, tpipg)
 # plot_all(pecos, Zecos)

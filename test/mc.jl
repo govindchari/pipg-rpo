@@ -15,7 +15,7 @@ include("../src/pipg.jl")
 K = 15              # Number of nodes
 n = 0.00113         # Mean Motion
 Nsim = 500          # Number of simulation nodes
-Nmc = 1
+Nmc = 128
 
 x0_nom = [150.0; 1000.0; 200.0; 0.0; 0.0; 0.0] # Initial Condition [r v] [m ms^-1]
 xT = zeros(6)       # Terminal condition [r v] [m ms^-1]
@@ -68,7 +68,7 @@ for i = 1 : Nmc
     # Solve with ECOS
     pecos = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
     t_ecos, zecos = solveTraj!(pecos, :ecos, true)
-    Zecos = single_shot(pecos, Nsim)
+    Zecos, junk = single_shot(pecos, Nsim)
     traj_ecos[i, :, :] = Zecos
     u_ecos[i, :, :] = pecos.uref
     σ_ecos[i,:] = pecos.σref
@@ -80,7 +80,7 @@ for i = 1 : Nmc
     # Solve with PIPG
     ppipg = ptr(nx, nu, K, f, dfx, dfu, par, :impulsive, :multiple)
     t_pipg, zpipg = solveTraj!(ppipg, :pipg, true)
-    Zpipg = single_shot(ppipg, Nsim)
+    Zpipg, junk = single_shot(ppipg, Nsim)
     traj_pipg[i, :, :] = Zpipg
     u_pipg[i, :, :] = ppipg.uref
     σ_pipg[i,:] = ppipg.σref
@@ -91,18 +91,9 @@ for i = 1 : Nmc
 end
 jldsave("test/data/mc_data.jld2"; traj_ecos, u_ecos, σ_ecos, iters_ecos, error_ecos, time_ecos, converged_ecos, traj_pipg, u_pipg, σ_pipg, iters_pipg, error_pipg, time_pipg, converged_pipg, x0_list)
 
-# # Print solve time stats
-# println("ECOS Time: ", sum(time_ecos))
-# println("PIPG Time: ", sum(time_pipg))
-# println("Performance: ", sum(time_ecos) / sum(time_pipg))
-# acc = (norm(zecos - zpipg) / norm(zecos)) * 100
-# println("PIPG within ", acc, " percent of ECOS")
-
-# if acc > 1.0
-#     println("####################")
-#     println("### NOT ACCURATE ###")
-#     println("####################")
-# end
-
+# Print solve time stats
+println("ECOS Time: ", sum(time_ecos))
+println("PIPG Time: ", sum(time_pipg))
+println("Performance: ", sum(time_ecos) / sum(time_pipg))
 println("PIPG Percent Converged: ", 100 * sum(converged_pipg) / Nmc)
 println("ECOS Percent Converged: ", 100 * sum(converged_ecos) / Nmc)
