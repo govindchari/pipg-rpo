@@ -13,7 +13,7 @@ If you find this code or paper useful please cite the following
 
 ```
 @inproceedings{chari2024spacecraft,
-  author = {Chari, Govind M. and and Behcet Acikmese},
+  author = {Chari, Govind M. and Behcet Acikmese},
   title = {Spacecraft Rendezvous Guidance via Factorization-Free Sequential Convex Programming using a First-Order Method},
   booktitle = {AAS Rocky Mountain Guidance, Navigation and Control Conference},
   year = {2024},
